@@ -3,7 +3,7 @@ const { json } = require('body-parser');
 const Router = require('express');
 const router = Router.Router();
 
-let parser = require('../Analizador/Interprete');
+let parser = require('../analizador/Interprete');
 
 
 router.post('/analizar', function (req, res, next) {
