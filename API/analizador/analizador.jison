@@ -5,18 +5,20 @@
     const {Literal} = require('../expresiones/Literal');
     const {Type} = require('../symbols/Type');
     const {Declaracion} = require('../instrucciones/Declaracion');
-
-
+    const {Singleton} = require('../singleton/Singleton');
+    const {Bloque} = require('../instrucciones/Bloque');
+    const {Asignacion} = require('../instrucciones/Asignacion');
     // expresiones 
     const {Aritmetica, AritmeticOp} = require('../expresiones/Aritmetica');
-    const {Relacional, RelacionalOp} = require('../expresiones/Relacional');
+    const {Relacional, RelacionaOp} = require('../expresiones/Relacional');
     const {Logica, LogicaOp} = require('../expresiones/Logica');
+    const { Print } = require('../instrucciones/Print');   
+    const { Println } = require('../instrucciones/Println');   
     
     
-    
-    
+    let sg = Singleton.getInstance();    
     let tokens = [];
-    let errores = [];
+    let errores = sg.errores;
 %}
 
 %lex
@@ -92,8 +94,8 @@
 
 // Expresiones Regulares
 ([a-zA-Z])[a-zA-Z0-9_]*	    { tokens.push(new Token('tk_identificador', yytext, yylloc.first_line, yylloc.first_column)); return 'IDENTIFICADOR'; }
-[0-9]+\b				    { tokens.push(new Token('tk_entero', yytext, yylloc.first_line, yylloc.first_column)); return 'ENTERO'; }
 [0-9]+("."[0-9]+)?\b  	    { tokens.push(new Token('tk_decimal', yytext, yylloc.first_line, yylloc.first_column)); return 'DECIMAL'; }
+[0-9]+\b				    { tokens.push(new Token('tk_entero', yytext, yylloc.first_line, yylloc.first_column)); return 'ENTERO'; }
 
 \"((\\\")|[^\"\n])*\"				    {  /*yytext = yytext.substr(1, yyleng-2);*/ tokens.push(new Token('tk_cadena', yytext, yylloc.first_line, yylloc.first_column)); 
                                 return 'CADENA';                           
@@ -180,7 +182,7 @@ asig
 ;
 
 asignacion
-    : IDENTIFICADOR ASIG expresion_logica PTCOMA
+    : IDENTIFICADOR ASIG expresion_logica PTCOMA { $$ = new Asignacion($1, $3, @1.first_line, @1.first_column);}
 ;
 
 if
@@ -226,8 +228,8 @@ do
 ;
 
 return
-    : %Empty
-    | RRETURN expresion_numerica PTCOMA
+    : RRETURN expresion_numerica PTCOMA
+    | RRETURN PTCOMA
 
 ;
 
@@ -243,7 +245,7 @@ lparametros
 ;
 
 bloque
-    : LLAVE_A bodyBlock LLAVE_C
+    : LLAVE_A bodyBlock LLAVE_C { $$ = new Bloque($2, @1.first_line, @1.first_column); }
 ;
 
 call
@@ -256,11 +258,11 @@ largumentos
 ;
 
 print
-    : RPRINT PARENTESIS_A expresion_numerica PARENTESIS_C PTCOMA
+    : RPRINT PARENTESIS_A expresion_numerica PARENTESIS_C PTCOMA { $$ = new Print($3, @1.first_line, @1.first_column);}
 ;
 
 println
-    : RPRINTLN PARENTESIS_A expresion_numerica PARENTESIS_C PTCOMA
+    : RPRINTLN PARENTESIS_A expresion_numerica PARENTESIS_C PTCOMA { $$ = new Println($3, @1.first_line, @1.first_column);}
 ;
 
 typeof
@@ -269,7 +271,7 @@ typeof
 
 
 bodyBlock
-    : linstrucciones
+    : linstrucciones { $$ = $1;}
     | %Empty
 ;
 
@@ -277,18 +279,18 @@ expresion_logica
     : expresin_relacional AND expresin_relacional {$$ = new Logica($1, $3, LogicaOp.and,@1.first_line, @1.first_column);}
     | expresin_relacional OR expresin_relacional{$$ = new Logica($1, $3, LogicaOp.or,@1.first_line, @1.first_column);}
     | expresin_relacional XOR expresin_relacional{$$ = new Logica($1, $3, LogicaOp.xor,@1.first_line, @1.first_column);}
-    | NOT expresin_relacional %prec UMENOS{$$ = new Logica(null, $3, LogicaOp.not,@1.first_line, @1.first_column);}
+    | NOT expresin_relacional %prec UMENOS {$$ = new Logica($2, $2, LogicaOp.not,@1.first_line, @1.first_column);}
     | expresin_relacional {$$ = $1;}
 ;
 
 
 expresin_relacional
-    : expresion_numerica MAYOR expresion_numerica {$$ = new Relacional($1, $3, RelacionalOp.mayor, @1.first_line, @1.first_column);}
-    | expresion_numerica MENOR expresion_numerica{$$ = new Relacional($1, $3, RelacionalOp.menor, @1.first_line, @1.first_column);}
-    | expresion_numerica MAYORI expresion_numerica{$$ = new Relacional($1, $3, RelacionalOp.mayori, @1.first_line, @1.first_column);}
-    | expresion_numerica MENORI expresion_numerica{$$ = new Relacional($1, $3, RelacionalOp.menori, @1.first_line, @1.first_column);}
-    | expresion_numerica IGUAL expresion_numerica{$$ = new Relacional($1, $3, RelacionalOp.igual, @1.first_line, @1.first_column);}
-    | expresion_numerica DIF expresion_numerica{$$ = new Relacional($1, $3, RelacionalOp.dif, @1.first_line, @1.first_column);}
+    : expresion_numerica MAYOR expresion_numerica {$$ = new Relacional($1, $3, RelacionaOp.mayor, @1.first_line, @1.first_column);}
+    | expresion_numerica MENOR expresion_numerica{$$ = new Relacional($1, $3, RelacionaOp.menor, @1.first_line, @1.first_column);}
+    | expresion_numerica MAYORI expresion_numerica{$$ = new Relacional($1, $3, RelacionaOp.mayori, @1.first_line, @1.first_column);}
+    | expresion_numerica MENORI expresion_numerica{$$ = new Relacional($1, $3, RelacionaOp.menori, @1.first_line, @1.first_column);}
+    | expresion_numerica IGUAL expresion_numerica{$$ = new Relacional($1, $3, RelacionaOp.igual, @1.first_line, @1.first_column);}
+    | expresion_numerica DIF expresion_numerica{$$ = new Relacional($1, $3, RelacionaOp.dif, @1.first_line, @1.first_column);}
     | expresion_numerica {$$ = $1;}
 ;
 
@@ -301,7 +303,7 @@ expresion_numerica
     | expresion_numerica MULT expresion_numerica{ $$ = new Aritmetica($1, $3, AritmeticOp.MULT,@1.first_line, @1.first_column )}
     | expresion_numerica DIV expresion_numerica{ $$ = new Aritmetica($1, $3, AritmeticOp.DIV,@1.first_line, @1.first_column )}
     | expresion_numerica MOD expresion_numerica{ $$ = new Aritmetica($1, $3, AritmeticOp.MOD,@1.first_line, @1.first_column )}
-    | PARENTESIS_A expresion_logica PARENTESIS_C
+    | PARENTESIS_A expresion_logica PARENTESIS_C { $$ = $1;}
     | incdec {$$ = $1;}
     | expresion_logica { $$ = $1;}
     | IDENTIFICADOR PARENTESIS_A largumentos PARENTESIS_C
@@ -319,8 +321,8 @@ incdec
 
 dato
     : IDENTIFICADOR{$$ = new Literal($1, Type.IDENTIFICADOR, @1.first_line, @1.first_column);}
-    | ENTERO{$$ = new Literal($1, Type.NUMBER, @1.first_line, @1.first_column);}
-    | DECIMAL{$$ = new Literal($1, Type.DECIMAL, @1.first_line, @1.first_column);}
+    | ENTERO {$$ = new Literal($1, Type.NUMBER, @1.first_line, @1.first_column);}
+    | DECIMAL {$$ = new Literal($1, Type.NUMBER, @1.first_line, @1.first_column);}
     | CADENA {$$ = new Literal($1, Type.STRING, @1.first_line, @1.first_column);}
     | CHAR {$$ = new Literal($1, Type.CHAR, @1.first_line, @1.first_column);}
     | RTRUE {$$ = new Literal($1, Type.BOOLEAN, @1.first_line, @1.first_column);}

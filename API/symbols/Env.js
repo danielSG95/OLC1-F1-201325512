@@ -1,44 +1,73 @@
-const Symbol = require('../symbols/Symbol');
-
+const { Symbol } = require("../symbols/Symbol");
 
 class Env {
-    #tablaSimbolos;
-    constructor(anterior) {
-        this.anterior = anterior;
-        this.#tablaSimbolos = new Map();
+  #tablaSimbolos;
+  constructor(anterior) {
+    this.anterior = anterior;
+    this.#tablaSimbolos = new Map();
+  }
 
+  getEnv() {
+    return this.#tablaSimbolos;
+  }
+
+  insertSymbol(nombre, valor, type) {
+    if (this.buscarVariable(nombre) == null) {
+      this.#tablaSimbolos.set(nombre, new Symbol(valor, nombre, type));
+    } else {
+      throw new TypeError("La variable ya existe en la tabla de simbolos.");
+    }
+  }
+
+  // esto queda temporalmente sin uso.
+  buscarKey(nombre) {
+    this.#tablaSimbolos.forEach((val, key) => {
+      if (key == nombre) {
+        return val;
+      }
+    });
+
+    return null;
+  }
+
+  buscarVariable(nombre) {
+    return this.#findVariable(nombre, this);
+  }
+
+  #findVariable(nombre, padre) {
+    if (padre == null || padre == undefined) {
+      return null;
     }
 
-    getEnv() {
-        return this.#tablaSimbolos;
+    let current = padre.#tablaSimbolos;
+    for (const element of current) {
+      if (element[0] == nombre) {
+        return element[1];
+      }
     }
 
-    insertSymbol(nombre, valor, type) {
-        if (this.buscarKey(nombre) != null) {
-            this.#tablaSimbolos.set(nombre, new Symbol(valor, nombre, type));
-        } else {
-            throw new TypeError('La variable ya existe en la tabla de simbolos.');
-        }
+    return this.#findVariable(nombre, padre.anterior);
+  }
+
+  updateVar(nombre, newSymbol) {
+    return this.#updateSymbol(nombre, newSymbol, this);
+  }
+
+  #updateSymbol(nombre, newSymbol, padre) {
+    if (padre == null || padre == undefined) {
+      return false;
     }
 
-    buscarKey(nombre) {
-        this.#tablaSimbolos.forEach((val, key) => {
-            if (key == nombre) {
-                return val;
-            }
-        })
-
-        return null;
+    let current = padre.#tablaSimbolos;
+    for (const element of current) {
+      if (element[0] == nombre) {
+        current.set(element[0], newSymbol);
+        return true;
+      }
     }
 
-    updateKey(nombre, valor) {
-        this.#tablaSimbolos.forEach((val, key) => {
-            if (key == nombre) {
-                val = valor; // esto queda a prueba, no estoy seguro que funcione jeje salu2
-            }
-        })
-    }
+    return this.#updateSymbol(nombre, newSymbol, padre.anterior);
+  }
 }
-
 
 module.exports.Env = Env;

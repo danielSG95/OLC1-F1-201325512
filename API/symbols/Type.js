@@ -4,6 +4,7 @@ const Type = {
     BOOLEAN: 'boolean',
     DECIMAL: 'double',
     CHAR: 'char',
+    IDENTIFICADOR: 'id',
     ERR: 'error',
 }
 
