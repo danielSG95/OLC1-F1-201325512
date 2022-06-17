@@ -65,9 +65,15 @@ class Aritmetica extends Expresion {
           );
         }
 
+        let resultado = leftOp.value / rightOp.value;
+        let flag = Type.NUMBER;
+        if (this.#isDecimal(resultado)) {
+          resultado = resultado.toFixed(2);
+          flag = Type.DECIMAL;
+        }
         result = {
-          value: leftOp.value / rightOp.value,
-          type: getType(leftOp, rightOp),
+          value: resultado,
+          type: flag,
         };
         break;
       case AritmeticOp.POW:
@@ -120,6 +126,15 @@ class Aritmetica extends Expresion {
         "Error Semantico"
       )
     );
+  }
+
+  #isDecimal(resultado) {
+    resultado = resultado.toString();
+    if (resultado.includes(".")) {
+      return true;
+    }
+
+    return false;
   }
 }
 

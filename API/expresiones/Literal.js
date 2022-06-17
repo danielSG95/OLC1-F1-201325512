@@ -22,9 +22,16 @@ class Literal {
           type: Type.CHAR,
         };
       case Type.NUMBER:
+        let aux = this.value.toString().includes(".");
+        let valor = Number(this.value);
+        let tipo = Type.NUMBER;
+        if (aux) {
+          valor = parseFloat(this.value);
+          tipo = Type.DECIMAL;
+        }
         return {
-          value: Number(this.value),
-          type: Type.NUMBER,
+          value: valor,
+          type: tipo,
         };
       case Type.STRING:
         const value = this.value.toString().replaceAll('"', "");

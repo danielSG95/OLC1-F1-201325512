@@ -8,13 +8,15 @@
     const {Singleton} = require('../singleton/Singleton');
     const {Bloque} = require('../instrucciones/Bloque');
     const {Asignacion} = require('../instrucciones/Asignacion');
+    const { Incremento } = require('../instrucciones/Incremento');
+    const { Decremento } = require('../instrucciones/Decremento');
     // expresiones 
     const {Aritmetica, AritmeticOp} = require('../expresiones/Aritmetica');
     const {Relacional, RelacionaOp} = require('../expresiones/Relacional');
     const {Logica, LogicaOp} = require('../expresiones/Logica');
     const { Print } = require('../instrucciones/Print');   
     const { Println } = require('../instrucciones/Println');   
-    
+    const { Typeof } = require('../instrucciones/Typeof');   
     
     let sg = Singleton.getInstance();    
     let tokens = [];
@@ -158,7 +160,7 @@ instruccion
     | call{ $$ = $1; }
     | print { $$ = $1; }
     | println { $$ = $1; }
-    | typeof{ $$ = $1; }
+    | typeof PTCOMA { $$ = $1; }
     | RBREAK PTCOMA{ $$ = $1; /*estos deben ser casos especiales. Porque son instrucciones de una linea. */}
     | RCONTINUE PTCOMA{ $$ = $1; }
     | incdec PTCOMA{ $$ = $1; }
@@ -258,15 +260,15 @@ largumentos
 ;
 
 print
-    : RPRINT PARENTESIS_A expresion_numerica PARENTESIS_C PTCOMA { $$ = new Print($3, @1.first_line, @1.first_column);}
+    : RPRINT PARENTESIS_A expresion_logica PARENTESIS_C PTCOMA { $$ = new Print($3, @1.first_line, @1.first_column);}
 ;
 
 println
-    : RPRINTLN PARENTESIS_A expresion_numerica PARENTESIS_C PTCOMA { $$ = new Println($3, @1.first_line, @1.first_column);}
+    : RPRINTLN PARENTESIS_A expresion_logica PARENTESIS_C PTCOMA { $$ = new Println($3, @1.first_line, @1.first_column);}
 ;
 
 typeof
-    : RTYPEOF PARENTESIS_A dato PARENTESIS_C PTCOMA
+    : RTYPEOF PARENTESIS_A expresion_logica PARENTESIS_C { $$ = new Typeof($3, @1.first_line, @1.first_column); }
 ;
 
 
@@ -308,15 +310,16 @@ expresion_numerica
     | expresion_logica { $$ = $1;}
     | IDENTIFICADOR PARENTESIS_A largumentos PARENTESIS_C
     | dato {$$= $1;}
+    | typeof { $$ = $1; } // probando si esto funciona  
 ;
 
 
 
 incdec
-    : MAS MAS expresion_numerica { $$ = new Aritmetica($3, 1, AritmeticOp.MAS,@1.first_line, @1.first_column )}
-    | MENOS MENOS expresion_numerica { $$ = new Aritmetica($3, 1, AritmeticOp.MENOS,@1.first_line, @1.first_column )}
-    | expresion_numerica MAS MAS{ $$ = new Aritmetica($1, 1, AritmeticOp.MAS,@1.first_line, @1.first_column )}
-    | expresion_numerica MENOS MENOS{ $$ = new Aritmetica($1, 1, AritmeticOp.MENOS,@1.first_line, @1.first_column )}
+    : MAS MAS expresion_numerica { $$ = new Incremento($3, @1.first_line, @1.first_column);}
+    | MENOS MENOS expresion_numerica { $$ = new Decremento($3, @1.first_line, @1.first_column);}
+    | expresion_numerica MAS MAS{ $$ = new Incremento($1, @1.first_line, @1.first_column);}
+    | expresion_numerica MENOS MENOS{ $$ = new Decremento($1, @1.first_line, @1.first_column);}
 ;
 
 dato
