@@ -16,6 +16,7 @@
     const {Continue } = require('../instrucciones/Continue');
     const {If } = require('../instrucciones/If');
     const {DoWhile } = require('../instrucciones/DoWhile');
+    const {For} = require('../instrucciones/For');
     // expresiones 
     const {Aritmetica, AritmeticOp} = require('../expresiones/Aritmetica');
     const {Relacional, RelacionaOp} = require('../expresiones/Relacional');
@@ -153,23 +154,23 @@ linstrucciones
 ;
 
 instruccion
-    : declaracion { $$ = $1;}
-    | asignacion { $$ = $1; }
-    | if { $$ = $1; }
+    : declaracion { $$ = $1;} // listo
+    | asignacion { $$ = $1; } // listo
+    | if { $$ = $1; } // listo 
     | switch{ $$ = $1; } 
-    | for{ $$ = $1; }
-    | while { $$ = $1; }
-    | do{ $$ = $1; }
-    | return { $$ = $1; /*tener especial cuidado en como manejo esto*/}
+    | for{ $$ = $1; } // listo
+    | while { $$ = $1; } // listo
+    | do{ $$ = $1; } // listo 
+    | return { $$ = $1; } // listo 
     | func{ $$ = $1; }
-    | bloque{ $$ = $1; }
+    | bloque{ $$ = $1; } // listo 
     | call{ $$ = $1; }
-    | print { $$ = $1; }
-    | println { $$ = $1; }
-    | typeof PTCOMA { $$ = $1; }
-    | RBREAK PTCOMA{ $$ = new Break(@1.first_line, @1.first_column); }
-    | RCONTINUE PTCOMA{ $$ = new Continue(@1.first_line, @1.first_column); }
-    | incdec PTCOMA{ $$ = $1; }
+    | print { $$ = $1; } // listo
+    | println { $$ = $1; } // listo 
+    | typeof PTCOMA { $$ = $1; } // listo 
+    | RBREAK PTCOMA{ $$ = new Break(@1.first_line, @1.first_column); } // listo 
+    | RCONTINUE PTCOMA{ $$ = new Continue(@1.first_line, @1.first_column); } // listo 
+    | incdec PTCOMA{ $$ = $1; } // listo 
 ;
 
 
@@ -213,17 +214,19 @@ lcase
 
 
 for
-    : RFOR PARENTESIS_A for_declaracion expresion_logica PTCOMA for_incremento PARENTESIS_C LLAVE_A bodyBlock LLAVE_C
+    : RFOR PARENTESIS_A for_declaracion expresion_logica PTCOMA for_incremento PARENTESIS_C LLAVE_A bodyBlock LLAVE_C {
+        $$ = new For($3, $4, $6, $9, @1.first_line, @1.first_column);
+    }
 ;
 
 for_declaracion
-    : declaracion
-    | asignacion
+    : declaracion { $$ = $1;}
+    | asignacion { $$ = $1;}
 ;
 
 for_incremento
-    : expresion_numerica
-    | asignacion
+    : expresion_numerica { $$ = $1;}
+    | asignacion { $$ = $1;}
 ;
 
 while

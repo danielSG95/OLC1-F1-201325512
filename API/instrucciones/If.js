@@ -1,5 +1,6 @@
 const { Instruccion } = require("../abstract/Instruccion");
 const { Env } = require("../symbols/Env");
+const { Type } = require("../symbols/Type");
 const { Return } = require("./Return");
 
 class If extends Instruccion {
@@ -22,7 +23,7 @@ class If extends Instruccion {
           if (r.type == Type.BREAK) {
             return; // aqui hago un return sin mas.
           } else if (r.type == Type.CONTINUE) {
-            continue; // aqui necesito llamar a continue
+            return r;
           } else {
             return r; // aqui estoy devolviendo un tipo de dato.
           }

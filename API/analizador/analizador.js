@@ -101,7 +101,7 @@ break;
 case 4:
  this.$ = [$$[$0]]
 break;
-case 5: case 58: case 81:
+case 5: case 38: case 39: case 40: case 41: case 58: case 81:
  this.$ = $$[$0];
 break;
 case 6: case 7: case 8: case 9: case 10: case 11: case 13: case 14: case 15: case 16: case 17: case 84:
@@ -148,6 +148,11 @@ case 31:
 break;
 case 32:
  this.$ = new If($$[$0-8], $$[$0-5], $$[$0-1], null, _$[$0-10].first_line, _$[$0-10].first_column);
+break;
+case 37:
+
+        this.$ = new For($$[$0-7], $$[$0-6], $$[$0-4], $$[$0-1], _$[$0-9].first_line, _$[$0-9].first_column);
+    
 break;
 case 42:
  this.$ = new While($$[$0-4], $$[$0-1], _$[$0-6].first_line, _$[$0-6].first_column);
@@ -443,6 +448,7 @@ parse: function parse(input) {
     const {Continue } = require('../instrucciones/Continue');
     const {If } = require('../instrucciones/If');
     const {DoWhile } = require('../instrucciones/DoWhile');
+    const {For} = require('../instrucciones/For');
     // expresiones 
     const {Aritmetica, AritmeticOp} = require('../expresiones/Aritmetica');
     const {Relacional, RelacionaOp} = require('../expresiones/Relacional');

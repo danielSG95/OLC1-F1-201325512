@@ -1,6 +1,7 @@
 const { Type } = require("../symbols/Type");
 const { Expresion } = require("../abstract/expresion");
 const { Singleton } = require("../singleton/Singleton");
+const { Error } = require("../analizador/Error");
 class Aritmetica extends Expresion {
   constructor(left, right, type, line, column) {
     super(line, column);

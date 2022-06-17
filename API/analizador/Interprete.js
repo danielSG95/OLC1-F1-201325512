@@ -20,7 +20,6 @@ function analizar(text) {
 
     return true;
   } catch (err) {
-    console.log("se ha encontrado un error");
     console.error(err);
     console.log(Singleton.getInstance().errores);
     return false;

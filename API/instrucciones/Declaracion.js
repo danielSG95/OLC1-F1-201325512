@@ -14,7 +14,7 @@ class Declaracion extends Instruccion {
 
   ejecutar(env) {
     console.log("detectando una declaracion SIUUUUU");
-    console.log(this.expression);
+    // console.log(this.expression);
     let isValid = true;
 
     let result = this.expression.ejecutar(env);
@@ -48,7 +48,7 @@ class Declaracion extends Instruccion {
       this.name.forEach((element) => {
         env.insertSymbol(element, result.value, result.type, this.isConstant);
       });
-      console.log(env.getEnv());
+      // console.log(env.getEnv());
     } else {
       console.log("Se ha encontrado un error durante la declaracion.");
     }

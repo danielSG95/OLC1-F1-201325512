@@ -24,7 +24,8 @@ class While extends Instruccion {
             if (r.type == Type.BREAK) {
               return; // aqui hago un return sin mas.
             } else if (r.type == Type.CONTINUE) {
-              continue; // aqui necesito llamar a continue
+              // continue; // aqui necesito llamar a continue
+              break; // asi es como simulo el continue
             } else {
               return r; // aqui estoy devolviendo un tipo de dato.
             }
