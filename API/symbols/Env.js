@@ -11,9 +11,13 @@ class Env {
     return this.#tablaSimbolos;
   }
 
-  insertSymbol(nombre, valor, type) {
-    if (this.buscarVariable(nombre) == null) {
-      this.#tablaSimbolos.set(nombre, new Symbol(valor, nombre, type));
+  insertSymbol(nombre, valor, type, isConstant) {
+    if (this.buscarKey(nombre) == null) {
+      // modificada
+      this.#tablaSimbolos.set(
+        nombre,
+        new Symbol(valor, nombre, type, isConstant)
+      );
     } else {
       throw new TypeError("La variable ya existe en la tabla de simbolos.");
     }
@@ -61,6 +65,10 @@ class Env {
     let current = padre.#tablaSimbolos;
     for (const element of current) {
       if (element[0] == nombre) {
+        if (element[1].isConstant) {
+          console.log("no se puede modificar una constante");
+          return false;
+        }
         current.set(element[0], newSymbol);
         return true;
       }

@@ -110,11 +110,14 @@ break;
 case 12:
  this.$ = $$[$0]; /*tener especial cuidado en como manejo esto*/
 break;
-case 18: case 20: case 21:
+case 18: case 21:
  this.$ = $$[$0-1]; 
 break;
 case 19:
- this.$ = $$[$0-1]; /*estos deben ser casos especiales. Porque son instrucciones de una linea. */
+ this.$ = new Break(_$[$0-1].first_line, _$[$0-1].first_column); 
+break;
+case 20:
+ this.$ = new Continue(_$[$0-1].first_line, _$[$0-1].first_column); 
 break;
 case 22:
  this.$ = new Declaracion($$[$0-2], $$[$0-3], $$[$0-1],false, _$[$0-3].first_line, _$[$0-3].first_column) 
@@ -133,6 +136,30 @@ this.$ = $$[$0];
 break;
 case 28:
  this.$ = new Asignacion($$[$0-3], $$[$0-1], _$[$0-3].first_line, _$[$0-3].first_column);
+break;
+case 29:
+ this.$ = new If($$[$0-4], $$[$0-1], null, null, _$[$0-6].first_line, _$[$0-6].first_column);
+break;
+case 30:
+ this.$ = new If($$[$0-2], $$[$0], null, null, _$[$0-4].first_line, _$[$0-4].first_column);
+break;
+case 31:
+ this.$ = new If($$[$0-6], $$[$0-3], null, $$[$0], _$[$0-8].first_line, _$[$0-8].first_column);
+break;
+case 32:
+ this.$ = new If($$[$0-8], $$[$0-5], $$[$0-1], null, _$[$0-10].first_line, _$[$0-10].first_column);
+break;
+case 42:
+ this.$ = new While($$[$0-4], $$[$0-1], _$[$0-6].first_line, _$[$0-6].first_column);
+break;
+case 43:
+ this.$ = new DoWhile($$[$0-2], $$[$0-6], _$[$0-8].first_line, _$[$0-8].first_column);
+break;
+case 44:
+ this.$ = new Return($$[$0-1], _$[$0-2].first_line, _$[$0-2].first_column);
+break;
+case 45:
+ this.$ = new Return(null, _$[$0-1].first_line, _$[$0-1].first_column);
 break;
 case 51:
  this.$ = new Bloque($$[$0-1], _$[$0-2].first_line, _$[$0-2].first_column); 
@@ -198,7 +225,7 @@ case 78:
  this.$ = new Aritmetica($$[$0-2], $$[$0], AritmeticOp.MOD,_$[$0-2].first_line, _$[$0-2].first_column )
 break;
 case 79:
- this.$ = $$[$0-2];
+ this.$ = $$[$0-1];
 break;
 case 83:
 this.$= $$[$0];
@@ -409,7 +436,13 @@ parse: function parse(input) {
     const {Bloque} = require('../instrucciones/Bloque');
     const {Asignacion} = require('../instrucciones/Asignacion');
     const { Incremento } = require('../instrucciones/Incremento');
-    const { Decremento } = require('../instrucciones/Decremento');
+    const { Decremento } = require('../instrucciones/Decremento'); 
+    const { While } = require('../instrucciones/While');
+    const  {Return} = require('../instrucciones/Return');
+    const {Break } = require('../instrucciones/Break');
+    const {Continue } = require('../instrucciones/Continue');
+    const {If } = require('../instrucciones/If');
+    const {DoWhile } = require('../instrucciones/DoWhile');
     // expresiones 
     const {Aritmetica, AritmeticOp} = require('../expresiones/Aritmetica');
     const {Relacional, RelacionaOp} = require('../expresiones/Relacional');

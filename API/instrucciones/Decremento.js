@@ -1,22 +1,31 @@
 const { Instruccion } = require("../abstract/Instruccion");
-const { Aritmetica, AritmeticOp } = require("../expresiones/Aritmetica");
-const { Asignacion } = require("./Asignacion");
+const { Type } = require("../symbols/Type");
 class Decremento extends Instruccion {
   constructor(name, line, column) {
     super(line, column);
     this.line = line;
     this.column = column;
-    this.name;
+    this.name = name.value;
   }
   ejecutar(env) {
-    let asig = new Asignacion(
-      this.name,
-      new Aritmetica(this.name, 1, AritmeticOp.MENOS, this.line, this.column),
-      this.line,
-      this.column
-    );
+    let symbol = env.buscarVariable(this.name);
+    let isValid = true;
+    if (symbol != null) {
+      // la variable existe
+      if (
+        symbol.type != Type.NUMBER &&
+        symbol.type != Type.DECIMAL &&
+        symbol.type != Type.CHAR
+      ) {
+        // error
+        isValid = false;
+      }
 
-    asig.ejecutar(env);
+      if (isValid && !symbol.isConstant) {
+        symbol.value -= 1;
+        console.log(env.getEnv());
+      }
+    }
   }
 }
 

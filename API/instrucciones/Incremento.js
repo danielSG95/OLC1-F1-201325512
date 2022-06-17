@@ -1,23 +1,38 @@
 const { Instruccion } = require("../abstract/Instruccion");
 const { Aritmetica, AritmeticOp } = require("../expresiones/Aritmetica");
+const { Literal } = require("../expresiones/Literal");
+const { Type } = require("../symbols/Type");
 const { Asignacion } = require("./Asignacion");
+const { Typeof } = require("./Typeof");
 
 class Incremento extends Instruccion {
-  constructor(name, line, column) {
+  constructor(lit, line, column) {
     super(line, column);
     this.line = line;
     this.column = column;
-    this.name;
+    this.name = lit.value;
   }
   ejecutar(env) {
-    let asig = new Asignacion(
-      this.name,
-      new Aritmetica(this.name, 1, AritmeticOp.MAS, this.line, this.column),
-      this.line,
-      this.column
-    );
+    // buscar la variable
 
-    asig.ejecutar(env);
+    let symbol = env.buscarVariable(this.name);
+    let isValid = true;
+    if (symbol != null) {
+      // la variable existe
+      if (
+        symbol.type != Type.NUMBER &&
+        symbol.type != Type.DECIMAL &&
+        symbol.type != Type.CHAR
+      ) {
+        // error
+        isValid = false;
+      }
+
+      if (isValid && !symbol.isConstant) {
+        symbol.value += 1;
+        console.log(env.getEnv());
+      }
+    }
   }
 }
 

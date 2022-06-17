@@ -47,10 +47,11 @@ class Asignacion extends Instruccion {
         isValid = false;
       }
 
-      if (isValid) {
+      if (isValid && !symbol.isConstant) {
         // ahora aqui deberia de llamar al que hace la actualizacion.
         symbol.value = result.value;
-        env.updateVar(this.name, symbol);
+        env.updateVar(this.name, symbol); // esta de mas.
+        console.log("antes de env");
         console.log(env.getEnv());
       } else {
         console.log("Se ha encontrado un error durante la declaracion.");
@@ -61,7 +62,7 @@ class Asignacion extends Instruccion {
         this.name,
         this.line,
         this.column,
-        `La variable no ha sido declarada`,
+        `La variable no ha sido declarada o no esta permitida su modificacion`,
         "Error Semantico"
       );
     }

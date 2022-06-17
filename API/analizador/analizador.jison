@@ -9,7 +9,13 @@
     const {Bloque} = require('../instrucciones/Bloque');
     const {Asignacion} = require('../instrucciones/Asignacion');
     const { Incremento } = require('../instrucciones/Incremento');
-    const { Decremento } = require('../instrucciones/Decremento');
+    const { Decremento } = require('../instrucciones/Decremento'); 
+    const { While } = require('../instrucciones/While');
+    const  {Return} = require('../instrucciones/Return');
+    const {Break } = require('../instrucciones/Break');
+    const {Continue } = require('../instrucciones/Continue');
+    const {If } = require('../instrucciones/If');
+    const {DoWhile } = require('../instrucciones/DoWhile');
     // expresiones 
     const {Aritmetica, AritmeticOp} = require('../expresiones/Aritmetica');
     const {Relacional, RelacionaOp} = require('../expresiones/Relacional');
@@ -161,8 +167,8 @@ instruccion
     | print { $$ = $1; }
     | println { $$ = $1; }
     | typeof PTCOMA { $$ = $1; }
-    | RBREAK PTCOMA{ $$ = $1; /*estos deben ser casos especiales. Porque son instrucciones de una linea. */}
-    | RCONTINUE PTCOMA{ $$ = $1; }
+    | RBREAK PTCOMA{ $$ = new Break(@1.first_line, @1.first_column); }
+    | RCONTINUE PTCOMA{ $$ = new Continue(@1.first_line, @1.first_column); }
     | incdec PTCOMA{ $$ = $1; }
 ;
 
@@ -188,10 +194,10 @@ asignacion
 ;
 
 if
-    : RIF PARENTESIS_A expresion_logica PARENTESIS_C LLAVE_A bodyBlock LLAVE_C
-    | RIF PARENTESIS_A expresion_logica PARENTESIS_C instruccion
-    | RIF PARENTESIS_A expresion_logica PARENTESIS_C LLAVE_A bodyBlock LLAVE_C RELSE if
-    | RIF PARENTESIS_A expresion_logica PARENTESIS_C LLAVE_A bodyBlock LLAVE_C RELSE LLAVE_A bodyBlock LLAVE_C
+    : RIF PARENTESIS_A expresion_logica PARENTESIS_C LLAVE_A bodyBlock LLAVE_C { $$ = new If($3, $6, null, null, @1.first_line, @1.first_column);}
+    | RIF PARENTESIS_A expresion_logica PARENTESIS_C instruccion { $$ = new If($3, $5, null, null, @1.first_line, @1.first_column);}
+    | RIF PARENTESIS_A expresion_logica PARENTESIS_C LLAVE_A bodyBlock LLAVE_C RELSE if { $$ = new If($3, $6, null, $9, @1.first_line, @1.first_column);}
+    | RIF PARENTESIS_A expresion_logica PARENTESIS_C LLAVE_A bodyBlock LLAVE_C RELSE LLAVE_A bodyBlock LLAVE_C { $$ = new If($3, $6, $10, null, @1.first_line, @1.first_column);}
 
 ;
 
@@ -221,17 +227,17 @@ for_incremento
 ;
 
 while
-    : RWHILE PARENTESIS_A expresion_logica PARENTESIS_C LLAVE_A bodyBlock LLAVE_C
+    : RWHILE PARENTESIS_A expresion_logica PARENTESIS_C LLAVE_A bodyBlock LLAVE_C { $$ = new While($3, $6, @1.first_line, @1.first_column);}
 ;
 
 do
-    : RDO LLAVE_A bodyBlock LLAVE_C RWHILE PARENTESIS_A expresion_logica PARENTESIS_C PTCOMA
+    : RDO LLAVE_A bodyBlock LLAVE_C RWHILE PARENTESIS_A expresion_logica PARENTESIS_C PTCOMA { $$ = new DoWhile($7, $3, @1.first_line, @1.first_column);}
 
 ;
 
 return
-    : RRETURN expresion_numerica PTCOMA
-    | RRETURN PTCOMA
+    : RRETURN expresion_numerica PTCOMA { $$ = new Return($2, @1.first_line, @1.first_column);}
+    | RRETURN PTCOMA { $$ = new Return(null, @1.first_line, @1.first_column);}
 
 ;
 
@@ -305,7 +311,7 @@ expresion_numerica
     | expresion_numerica MULT expresion_numerica{ $$ = new Aritmetica($1, $3, AritmeticOp.MULT,@1.first_line, @1.first_column )}
     | expresion_numerica DIV expresion_numerica{ $$ = new Aritmetica($1, $3, AritmeticOp.DIV,@1.first_line, @1.first_column )}
     | expresion_numerica MOD expresion_numerica{ $$ = new Aritmetica($1, $3, AritmeticOp.MOD,@1.first_line, @1.first_column )}
-    | PARENTESIS_A expresion_logica PARENTESIS_C { $$ = $1;}
+    | PARENTESIS_A expresion_logica PARENTESIS_C { $$ = $2;}
     | incdec {$$ = $1;}
     | expresion_logica { $$ = $1;}
     | IDENTIFICADOR PARENTESIS_A largumentos PARENTESIS_C

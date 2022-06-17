@@ -7,7 +7,7 @@ class Declaracion extends Instruccion {
     this.name = name;
     this.type = type;
     this.expression = expression;
-    this.constante = isConstant;
+    this.isConstant = isConstant;
     this.line = line;
     this.column = column;
   }
@@ -46,7 +46,7 @@ class Declaracion extends Instruccion {
 
     if (isValid) {
       this.name.forEach((element) => {
-        env.insertSymbol(element, result.value, result.type);
+        env.insertSymbol(element, result.value, result.type, this.isConstant);
       });
       console.log(env.getEnv());
     } else {
