@@ -3,12 +3,14 @@ import React, { useState, useEffect } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { oneDark } from "@codemirror/theme-one-dark";
 
-export default function App({ read, valor, onChangeText }) {
+export default function ConsolaApp({ read, valor }) {
   const [content, setContent] = useState("");
 
   useEffect(() => {
     setContent(valor);
+    console.log("cambiando data " + valor);
   }, [valor]);
+
   return (
     <CodeMirror
       value={content}
@@ -18,9 +20,9 @@ export default function App({ read, valor, onChangeText }) {
       maxHeight='450px'
       readOnly={read}
       theme={oneDark}
-      // extensions={[javascript]}
       onChange={(v) => {
-        onChangeText(v);
+        // onChangeText(v);
+        console.log(v);
       }}
     />
   );

@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import "./Navbar.css";
 
 export default function Navbar() {
-  // const [isEditor, setIsEditor] = useState(true);
   return (
     <nav className='navbar'>
       <div className='logo'>OLC1</div>
