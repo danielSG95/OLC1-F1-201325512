@@ -9,6 +9,7 @@ body {
   background-image: linear-gradient(to right, #152137, rgba(117, 19, 93, 0.73)), 
   url("https://images8.alphacoders.com/746/746199.jpg");
   background-size: cover;
+  width: 100%;
 }
 
 code {

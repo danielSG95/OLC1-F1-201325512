@@ -28,6 +28,26 @@ li{
     /* columns: #FFF; */
 }
 
+.navbar button {
+    border :none;
+    color: #FFF;
+    display: flex;
+    font-size: 20px;
+    margin-left: 1em;
+    padding: 5px 9px;
+    transition: 0.8s;
+    background-color: #17202A;
+}
+
+.navbar button:hover { 
+    background-color: #2C3E50;
+    border-radius: 8px;
+    opacity: 0.6;
+    font-size: 22px;
+    border-radius:9px ;
+    cursor: pointer;
+}
+
 .navbar a {
     color: #FFF;
     display: flex;

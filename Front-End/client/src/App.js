@@ -1,20 +1,8 @@
-import './App.css';
-import Editor from './components/Editor';
-import Navbar from './components/Navbar';
-
+import "./App.css";
+// import Navbar from "./components/Navbar";
 
 function App() {
-  return (
-    <>
-      <Navbar />
-      <main className='editor-container'>
-
-        <Editor />
-      </main>
-    </>
-
-
-  );
+  return <h2>hola</h2>;
 }
 
 export default App;

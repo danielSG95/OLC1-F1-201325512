@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { oneDark } from "@codemirror/theme-one-dark";
 
-export default function App({ read, valor, onChangeText }) {
+export default function CodeEditor({ read, valor, onChangeText }) {
   const [content, setContent] = useState("");
 
   useEffect(() => {
