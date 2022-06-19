@@ -2,13 +2,39 @@ const { Symbol } = require("../symbols/Symbol");
 
 class Env {
   #tablaSimbolos;
-  constructor(anterior) {
+  #tablaFunciones;
+  constructor(anterior, typEnv) {
     this.anterior = anterior;
     this.#tablaSimbolos = new Map();
+    this.#tablaFunciones = new Map();
+    this.typEnv = typEnv;
   }
 
   getEnv() {
     return this.#tablaSimbolos;
+  }
+
+  getEnvFuncion() {
+    return this.#tablaFunciones;
+  }
+
+  insertFuncion(nombre, valor) {
+    // algo
+    if (this.buscarFuncion(nombre) == null) {
+      this.#tablaFunciones.set(nombre, valor);
+      return true;
+    }
+    return false;
+  }
+
+  buscarFuncion(nombre) {
+    for (const iterator of this.#tablaFunciones) {
+      if (iterator[0] == nombre) {
+        return iterator[1];
+      }
+    }
+
+    return null;
   }
 
   insertSymbol(nombre, valor, type, isConstant) {
@@ -19,18 +45,18 @@ class Env {
         new Symbol(valor, nombre, type, isConstant)
       );
     } else {
-      throw new TypeError("La variable ya existe en la tabla de simbolos.");
+      // throw new TypeError("La variable ya existe en la tabla de simbolos.");
+      console.log("la variable ya fue declarada en este entorno");
     }
   }
 
   // esto queda temporalmente sin uso.
   buscarKey(nombre) {
-    this.#tablaSimbolos.forEach((val, key) => {
-      if (key == nombre) {
-        return val;
+    for (const iterator of this.#tablaSimbolos) {
+      if (iterator[0] == nombre) {
+        return iterator[1];
       }
-    });
-
+    }
     return null;
   }
 
@@ -78,4 +104,15 @@ class Env {
   }
 }
 
+const currentEnv = {
+  Ciclo: "ciclo",
+  Funcion: "funcion",
+  Bloque: "bloque",
+  If: "if",
+  Global: "global",
+  For: "for",
+  Switch: "switch",
+};
+
+module.exports.currentEnv = currentEnv;
 module.exports.Env = Env;

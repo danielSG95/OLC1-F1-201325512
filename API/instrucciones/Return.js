@@ -1,5 +1,8 @@
 const { Instruccion } = require("../abstract/Instruccion");
-
+const { Type } = require("../symbols/Type");
+const { currentEnv } = require("../symbols/Env");
+const { Singleton } = require("../singleton/Singleton");
+const { Error } = require("../analizador/Error");
 class Return extends Instruccion {
   constructor(exp, line, column) {
     super(line, column);
@@ -8,8 +11,24 @@ class Return extends Instruccion {
     this.column = column;
   }
   ejecutar(env) {
+    if (
+      env.typEnv != currentEnv.Funcion &&
+      env.typEnv != currentEnv.Ciclo &&
+      env.typEnv != currentEnv.For
+    ) {
+      Singleton.getInstance().errores.push(
+        new Error(
+          "return",
+          this.line,
+          this.column,
+          "La instruccion Return solo puede ejecutarse dentro de un Ciclo o una Funcion  ",
+          "Error Semantico"
+        )
+      );
+      return undefined;
+    }
     if (this.exp == null) {
-      return null;
+      return { value: null, type: Type.NULL };
     }
     let result = this.exp.ejecutar(env);
 

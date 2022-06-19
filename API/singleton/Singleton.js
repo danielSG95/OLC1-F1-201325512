@@ -1,3 +1,5 @@
+const { Error } = require("../analizador/Error");
+
 class Singleton {
   constructor() {
     this.console = "";

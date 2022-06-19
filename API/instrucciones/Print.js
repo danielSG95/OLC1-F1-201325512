@@ -16,6 +16,7 @@ class Print extends Instruccion {
     if (result.type != Type.ERR) {
       let consol = Singleton.getInstance().console;
       consol = consol.concat(result.value);
+      Singleton.getInstance().console = consol;
       console.log(`Print dice : '${consol}'`);
     }
   }

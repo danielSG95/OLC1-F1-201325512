@@ -1,5 +1,5 @@
 const { Instruccion } = require("../abstract/Instruccion");
-const { Env } = require("../symbols/Env");
+const { Env, currentEnv } = require("../symbols/Env");
 const { Type } = require("../symbols/Type");
 
 class For extends Instruccion {
@@ -22,7 +22,7 @@ class For extends Instruccion {
 
   ejecutar(env) {
     // algo
-    let forEnv = new Env(env);
+    let forEnv = new Env(env, currentEnv.For);
 
     // primero deberia de registrar la declaracion del for.
     this.declaracion.ejecutar(forEnv);
@@ -38,6 +38,8 @@ class For extends Instruccion {
           } else if (r.type == Type.CONTINUE) {
             // continue;
             break; // esto simulara un continue???
+          } else if (r.type == Type.NULL) {
+            return undefined;
           } else {
             return r;
           }

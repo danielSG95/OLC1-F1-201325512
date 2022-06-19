@@ -1,6 +1,7 @@
 const { Instruccion } = require("../abstract/Instruccion");
 const { Singleton } = require("../singleton/Singleton");
 const { Type } = require("../symbols/Type");
+const { Error } = require("../analizador/Error");
 class Declaracion extends Instruccion {
   constructor(name, type, expression, isConstant, line, column) {
     super(line, column);
@@ -18,6 +19,11 @@ class Declaracion extends Instruccion {
     let isValid = true;
 
     let result = this.expression.ejecutar(env);
+    if (result == undefined) {
+      // lanazar un error
+      this.#writeError("void", this.expression.name);
+      return;
+    }
     if (result.type == Type.ERR) {
       return;
     }
@@ -51,6 +57,7 @@ class Declaracion extends Instruccion {
       // console.log(env.getEnv());
     } else {
       console.log("Se ha encontrado un error durante la declaracion.");
+      throw new Error("no se puedo crear la variable");
     }
   }
 

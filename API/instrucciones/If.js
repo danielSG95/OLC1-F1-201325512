@@ -1,5 +1,5 @@
 const { Instruccion } = require("../abstract/Instruccion");
-const { Env } = require("../symbols/Env");
+const { Env, currentEnv } = require("../symbols/Env");
 const { Type } = require("../symbols/Type");
 const { Return } = require("./Return");
 
@@ -16,12 +16,12 @@ class If extends Instruccion {
   ejecutar(env) {
     let result = this.expresion.ejecutar(env); // me quiero suscribir al cambio que pueda sufrir esta variable.
     if (result.value) {
-      let newEnv = new Env(env);
+      let newEnv = new Env(env, currentEnv.If);
       for (const iterator of this.bloqueSi) {
         let r = iterator.ejecutar(newEnv);
         if (r != undefined) {
           if (r.type == Type.BREAK) {
-            return; // aqui hago un return sin mas.
+            return r;
           } else if (r.type == Type.CONTINUE) {
             return r;
           } else {
@@ -36,7 +36,7 @@ class If extends Instruccion {
       }
 
       if (this.bloqueNo) {
-        let newEnv = new Env(env);
+        let newEnv = new Env(env, currentEnv.If);
         for (const iterator of this.bloqueNo) {
           iterator.ejecutar(newEnv); // esto es un nuevo env
         }

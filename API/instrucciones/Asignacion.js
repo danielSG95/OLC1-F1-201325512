@@ -27,7 +27,7 @@ class Asignacion extends Instruccion {
 
       if (symbol.type == Type.DECIMAL) {
         if (result.type != Type.NUMBER && result.type != Type.DECIMAL) {
-          this.#writeError(this.name, result);
+          this.#writeError(this.name, result, symbol);
           isValid = false;
         }
 
@@ -36,23 +36,19 @@ class Asignacion extends Instruccion {
 
       if (symbol.type == Type.CHAR) {
         if (result.type != Type.NUMBER && result.type != Type.CHAR) {
-          this.#writeError(this.name, result);
+          this.#writeError(this.name, result, symbol);
           isValid = false;
         }
         result.type = Type.CHAR; // esto podria quitarse
       }
 
       if (symbol.type != result.type) {
-        this.#writeError(this.name, result);
+        this.#writeError(this.name, result, symbol);
         isValid = false;
       }
 
       if (isValid && !symbol.isConstant) {
-        // ahora aqui deberia de llamar al que hace la actualizacion.
         symbol.value = result.value;
-        env.updateVar(this.name, symbol); // esta de mas.
-        console.log("antes de env");
-        console.log(env.getEnv());
       } else {
         console.log("Se ha encontrado un error durante la declaracion.");
       }
@@ -68,7 +64,7 @@ class Asignacion extends Instruccion {
     }
   }
 
-  #writeError(result, lexema) {
+  #writeError(result, lexema, symbol) {
     Singleton.getInstance().errores.push(
       new Error(
         lexema,

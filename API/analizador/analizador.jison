@@ -8,15 +8,19 @@
     const {Singleton} = require('../singleton/Singleton');
     const {Bloque} = require('../instrucciones/Bloque');
     const {Asignacion} = require('../instrucciones/Asignacion');
-    const { Incremento } = require('../instrucciones/Incremento');
-    const { Decremento } = require('../instrucciones/Decremento'); 
-    const { While } = require('../instrucciones/While');
-    const  {Return} = require('../instrucciones/Return');
-    const {Break } = require('../instrucciones/Break');
-    const {Continue } = require('../instrucciones/Continue');
-    const {If } = require('../instrucciones/If');
-    const {DoWhile } = require('../instrucciones/DoWhile');
+    const {Incremento} = require('../instrucciones/Incremento');
+    const {Decremento} = require('../instrucciones/Decremento'); 
+    const {While} = require('../instrucciones/While');
+    const {Return} = require('../instrucciones/Return');
+    const {Break} = require('../instrucciones/Break');
+    const {Continue} = require('../instrucciones/Continue');
+    const {If} = require('../instrucciones/If');
+    const {DoWhile} = require('../instrucciones/DoWhile');
     const {For} = require('../instrucciones/For');
+    const {Funcion} = require('../instrucciones/Funcion');
+    const {Llamada} = require('../instrucciones/Llamada');
+    const {Switch, Case } = require('../instrucciones/Switch');
+// esto es un comentario 
     // expresiones 
     const {Aritmetica, AritmeticOp} = require('../expresiones/Aritmetica');
     const {Relacional, RelacionaOp} = require('../expresiones/Relacional');
@@ -126,9 +130,11 @@
 
 %left 'OR'
 %left 'AND'
+%left 'XOR'
+%left 'MAYORI', 'MAYOR', 'IGUAL', 'DIF', 'MENORI', 'MENOR'
 %left 'MAS' 'MENOS'
-%left 'MULT' 'DIV'
-%left 'POW', 'MOD'
+%left 'MULT' 'DIV', 'MOD'
+%left 'POW' 
 %right 'NOT'
 %left 'UMENOS'
 
@@ -162,18 +168,26 @@ instruccion
     | while { $$ = $1; } // listo
     | do{ $$ = $1; } // listo 
     | return { $$ = $1; } // listo 
-    | func{ $$ = $1; }
+    | func{ $$ = $1; } // listo 
     | bloque{ $$ = $1; } // listo 
-    | call{ $$ = $1; }
+    | call{ $$ = $1; } // listo
     | print { $$ = $1; } // listo
     | println { $$ = $1; } // listo 
     | typeof PTCOMA { $$ = $1; } // listo 
     | RBREAK PTCOMA{ $$ = new Break(@1.first_line, @1.first_column); } // listo 
     | RCONTINUE PTCOMA{ $$ = new Continue(@1.first_line, @1.first_column); } // listo 
     | incdec PTCOMA{ $$ = $1; } // listo 
+    | error PTCOMA { 
+        var e = new Error(err_lexema, this._$.first_line, this._$.first_column, esperados, "Error sintactico");
+        console.log(e);
+    }
+    | error LLAVE_C {
+        //this._$.first_line, this._$.first_column
+        var e = new Error(err_lexema, this._$.first_line, this._$.first_column, esperados, "Error sintactico");
+        console.log(e);
+    }
+    
 ;
-
-
 declaracion
     : tipo ldec asig PTCOMA { $$ = new Declaracion($2, $1, $3,false, @1.first_line, @1.first_column) }
     | RCONST tipo ldec asig PTCOMA { $$ = new Declaracion($3, $2, $4,true, @1.first_line, @1.first_column) }
@@ -196,26 +210,38 @@ asignacion
 
 if
     : RIF PARENTESIS_A expresion_logica PARENTESIS_C LLAVE_A bodyBlock LLAVE_C { $$ = new If($3, $6, null, null, @1.first_line, @1.first_column);}
-    | RIF PARENTESIS_A expresion_logica PARENTESIS_C instruccion { $$ = new If($3, $5, null, null, @1.first_line, @1.first_column);}
     | RIF PARENTESIS_A expresion_logica PARENTESIS_C LLAVE_A bodyBlock LLAVE_C RELSE if { $$ = new If($3, $6, null, $9, @1.first_line, @1.first_column);}
     | RIF PARENTESIS_A expresion_logica PARENTESIS_C LLAVE_A bodyBlock LLAVE_C RELSE LLAVE_A bodyBlock LLAVE_C { $$ = new If($3, $6, $10, null, @1.first_line, @1.first_column);}
 
+    | RIF PARENTESIS_A expresion_logica PARENTESIS_C instruccion { $$ = new If($3, [$5], null, null, @1.first_line, @1.first_column);}
+    | RIF PARENTESIS_A expresion_logica PARENTESIS_C instruccion RELSE if { $$ = new If($3, [$5], null, $7, @1.first_line, @1.first_column);}
+    | RIF PARENTESIS_A expresion_logica PARENTESIS_C instruccion RELSE instruccion { $$ = new If($3, [$5], [$6], null, @1.first_line, @1.first_column);}
 ;
 
 switch
-    : RSWITCH PARENTESIS_A expresion_numerica PARENTESIS_C LLAVE_A lcase LLAVE_C
+    : RSWITCH PARENTESIS_A expresion_numerica PARENTESIS_C LLAVE_A lcase LLAVE_C {
+        $$ = new Switch($3, $6, @1.first_line, @1.first_column);
+    }
 ;
 
 lcase
-    : lcase RCASE dato DOSPTS bodyBlock
-    | RDEFAULT DOSPTS bodyBlock
-    | RCASE dato DOSPTS bodyBlock
+    : lcase RCASE dato DOSPTS bodyBlock cdefault {
+        $1.push(new Case($3, $5, $6)); $$ = $1;
+    }
+    | RCASE dato DOSPTS bodyBlock cdefault { 
+        $$ = [new Case($2, $4, $5)];
+    }
 ;
 
+cdefault
+    : RDEFAULT DOSPTS bodyBlock { $$ = $3; } 
+    | %Empty
+; 
 
 for
     : RFOR PARENTESIS_A for_declaracion expresion_logica PTCOMA for_incremento PARENTESIS_C LLAVE_A bodyBlock LLAVE_C {
         $$ = new For($3, $4, $6, $9, @1.first_line, @1.first_column);
+        console.log('reconociendo un for')
     }
 ;
 
@@ -226,7 +252,7 @@ for_declaracion
 
 for_incremento
     : expresion_numerica { $$ = $1;}
-    | asignacion { $$ = $1;}
+    | IDENTIFICADOR ASIG expresion_logica { $$ = new Asignacion($1, $3, @1.first_line, @1.first_column);}
 ;
 
 while
@@ -245,14 +271,19 @@ return
 ;
 
 func
-    : tipo IDENTIFICADOR PARENTESIS_A lparametros PARENTESIS_C LLAVE_A bodyBlock LLAVE_C
-    | RVOID IDENTIFICADOR PARENTESIS_A lparametros PARENTESIS_C LLAVE_A bodyBlock LLAVE_C
+    : tipo IDENTIFICADOR PARENTESIS_A lparametros PARENTESIS_C LLAVE_A bodyBlock LLAVE_C {
+        $$ = new Funcion($2, $1, $4, $7, @1.first_line, @1.first_column);
+    }
+    | RVOID IDENTIFICADOR PARENTESIS_A lparametros PARENTESIS_C LLAVE_A bodyBlock LLAVE_C { 
+
+        $$ = new Funcion($2, $1, $4, $7, @1.first_line, @1.first_column);
+    }
 ;
 
 lparametros
     : %Empty
-    | lparametros COMA tipo IDENTIFICADOR
-    | tipo IDENTIFICADOR
+    | lparametros COMA tipo IDENTIFICADOR { $1.push({value: $4, type: $3}); $$ = $1;}
+    | tipo IDENTIFICADOR { $$ = [{value: $2, type: $1}]}
 ;
 
 bloque
@@ -260,12 +291,13 @@ bloque
 ;
 
 call
-    : RCALL IDENTIFICADOR PARENTESIS_A largumentos PARENTESIS_C PTCOMA
+    : RCALL IDENTIFICADOR PARENTESIS_A largumentos PARENTESIS_C PTCOMA { $$ = new Llamada($2, $4, @1.first_line, @1.first_column); }
 ;
 
 largumentos
-    : largumentos COMA expresion_numerica
-    | expresion_numerica
+    : largumentos COMA expresion_numerica { $1.push($3); $$ = $1;}
+    | expresion_numerica { $$ = [$1]}
+    | %Empty { $$ = []}
 ;
 
 print
@@ -307,7 +339,9 @@ expresin_relacional
 
 
 expresion_numerica
-    : MENOS expresion_numerica %prec UMENOS {$$ = new Aritmetica($2, -1, AritmeticOp.UMENOS, @1.first_line, @1.first_column)}
+    : MENOS expresion_numerica %prec UMENOS {
+        $$ = new Aritmetica($2, new Literal(-1, Type.NUMBER, 0, 0) , AritmeticOp.UMENOS, @1.first_line, @1.first_column)
+    }
     | expresion_numerica MAS expresion_numerica { $$ = new Aritmetica($1, $3, AritmeticOp.MAS,@1.first_line, @1.first_column )}
     | expresion_numerica MENOS expresion_numerica{ $$ = new Aritmetica($1, $3, AritmeticOp.MENOS,@1.first_line, @1.first_column )}
     | expresion_numerica MULT MULT expresion_numerica{ $$ = new Aritmetica($1, $3, AritmeticOp.POW,@1.first_line, @1.first_column )}
@@ -317,7 +351,7 @@ expresion_numerica
     | PARENTESIS_A expresion_logica PARENTESIS_C { $$ = $2;}
     | incdec {$$ = $1;}
     | expresion_logica { $$ = $1;}
-    | IDENTIFICADOR PARENTESIS_A largumentos PARENTESIS_C
+    | IDENTIFICADOR PARENTESIS_A largumentos PARENTESIS_C { $$ = new Llamada($1, $3, @1.first_line, @1.first_column);}
     | dato {$$= $1;}
     | typeof { $$ = $1; } // probando si esto funciona  
 ;

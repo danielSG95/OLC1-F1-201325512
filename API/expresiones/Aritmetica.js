@@ -24,9 +24,12 @@ class Aritmetica extends Expresion {
     switch (this.type) {
       case AritmeticOp.MAS:
         if (leftOp.type == Type.BOOLEAN || rightOp.type == Type.BOOLEAN) {
-          this.writeError(
-            `Tipos incompatibles. La operacion 'suma' no se puede operar con los tipos ${leftOp.type}, ${rightOp.type}`
-          );
+          if (leftOp.type == Type.STRING || rightOp.type == Type.STRING) {
+          } else {
+            this.writeError(
+              `Tipos incompatibles. La operacion 'suma' no se puede operar con los tipos ${leftOp.type}, ${rightOp.type}`
+            );
+          }
         }
         result = {
           value: leftOp.value + rightOp.value,

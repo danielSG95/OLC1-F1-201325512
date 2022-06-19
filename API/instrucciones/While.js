@@ -1,5 +1,5 @@
 const { Instruccion } = require("../abstract/Instruccion");
-const { Env } = require("../symbols/Env");
+const { Env, currentEnv } = require("../symbols/Env");
 const { Type } = require("../symbols/Type");
 const { Break } = require("./Break");
 const { Continue } = require("./Continue");
@@ -14,7 +14,7 @@ class While extends Instruccion {
   }
 
   ejecutar(env) {
-    let newEnv = new Env(env);
+    let newEnv = new Env(env, currentEnv.Ciclo);
     let result = this.expresion.ejecutar(env);
     while (result.value) {
       for (const e of this.linstrucciones) {
@@ -26,6 +26,9 @@ class While extends Instruccion {
             } else if (r.type == Type.CONTINUE) {
               // continue; // aqui necesito llamar a continue
               break; // asi es como simulo el continue
+            } else if (r.type == Type.NULL) {
+              // aqui se que debo salir sin retornar nada.
+              return undefined;
             } else {
               return r; // aqui estoy devolviendo un tipo de dato.
             }

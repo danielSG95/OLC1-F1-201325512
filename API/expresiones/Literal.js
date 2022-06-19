@@ -3,7 +3,7 @@ const Error = require("../analizador/Error").Error;
 const { Singleton } = require("../singleton/Singleton");
 class Literal {
   constructor(value, type, line, column) {
-    this.value = value.toLowerCase();
+    this.value = value;
     this.type = type;
     this.line = line;
     this.column = column;
@@ -17,8 +17,10 @@ class Literal {
           type: Type.BOOLEAN,
         };
       case Type.CHAR: // esto es un caso especial
+        // aqui debo de llamar al manejador
+
         return {
-          value: this.value.charAt(0),
+          value: this.#varlidarChar(this.value),
           type: Type.CHAR,
         };
       case Type.NUMBER:
@@ -27,6 +29,7 @@ class Literal {
         let tipo = Type.NUMBER;
         if (aux) {
           valor = parseFloat(this.value);
+          valor.toFixed(2);
           tipo = Type.DECIMAL;
         }
         return {
@@ -76,20 +79,20 @@ class Literal {
     let salida = -1;
     if (value.length > 1) {
       switch (value) {
-        case "\n":
+        case "\\n":
           salida = 10;
           break;
-        case "\r":
+        case "\\r":
           salida = 13;
           break;
         // prettier-ignore
-        case '\"':
+        case '\\"':
           salida = 34;
           break;
-        case "\\":
+        case "\\\\":
           salida = 92;
           break;
-        case "\t":
+        case "\\t":
           salida = 9;
           break;
       }

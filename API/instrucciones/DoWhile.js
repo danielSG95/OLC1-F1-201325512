@@ -1,5 +1,5 @@
 const { Instruccion } = require("../abstract/Instruccion");
-const { Env } = require("../symbols/Env");
+const { Env, currentEnv } = require("../symbols/Env");
 const { Type } = require("../symbols/Type");
 
 class DoWhile extends Instruccion {
@@ -12,7 +12,7 @@ class DoWhile extends Instruccion {
   }
 
   ejecutar(env) {
-    let newEnv = new Env(env);
+    let newEnv = new Env(env, currentEnv.Ciclo);
     let result = this.expresion.ejecutar(env);
     do {
       for (const iterator of this.linstrucciones) {
@@ -24,6 +24,8 @@ class DoWhile extends Instruccion {
             } else if (r.type == Type.CONTINUE) {
               // continue; // aqui necesito llamar a continue
               break; // asi es como simulo el continue
+            } else if (r.type == Type.NULL) {
+              return undefined;
             } else {
               return r; // aqui estoy devolviendo un tipo de dato.
             }

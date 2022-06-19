@@ -1,5 +1,6 @@
 const { Instruccion } = require("../abstract/Instruccion");
-const { Env } = require("../symbols/Env");
+const { Env, currentEnv } = require("../symbols/Env");
+const { Funcion } = require("../instrucciones/Funcion");
 
 class Bloque extends Instruccion {
   constructor(linstrucciones, line, column) {
@@ -11,14 +12,26 @@ class Bloque extends Instruccion {
   }
 
   ejecutar(env) {
-    const newEnv = new Env(env);
+    if (this.linstrucciones == undefined) {
+      return undefined;
+    }
+    const newEnv = new Env(env, currentEnv.Bloque);
     // algo
-    for (const e of this.linstrucciones) {
-      try {
-        e.ejecutar(newEnv);
-      } catch (err) {
-        console.error(err);
+    try {
+      // ejecuto funcion para poder guardarla en la tabla de simbolos
+      for (const e of this.linstrucciones) {
+        if (e instanceof Funcion) {
+          e.ejecutar(newEnv);
+        }
       }
+      // ejecuto todo lo que no sea funcion
+      for (const e of this.linstrucciones) {
+        if (!(e instanceof Funcion)) {
+          e.ejecutar(newEnv);
+        }
+      }
+    } catch (error) {
+      console.log(error);
     }
   }
 }

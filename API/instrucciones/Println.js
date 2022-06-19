@@ -16,6 +16,7 @@ class Println extends Instruccion {
     if (result.type != Type.ERR) {
       let consol = Singleton.getInstance().console;
       consol = consol.concat(result.value + "\n");
+      Singleton.getInstance().console = consol;
       console.log(`Println dice :'${consol}'`);
     }
   }
