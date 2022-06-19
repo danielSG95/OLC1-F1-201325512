@@ -147,6 +147,10 @@ s
             err: errores, 
             ast: $1,
         };
+    } 
+    | error EOF {
+        var e = new Error(err_lexema, this._$.first_line, this._$.first_column, esperados, "Error sintactico");
+        console.log(e);
     }
 ;
 

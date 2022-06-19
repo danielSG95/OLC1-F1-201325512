@@ -12,6 +12,7 @@ class Switch extends Instruccion {
   ejecutar(env) {
     // ejecutar aqui
     console.log("switch aqui ");
+    let result = this.condicion.ejecutar(env);
   }
 }
 
