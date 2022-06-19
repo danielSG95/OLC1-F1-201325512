@@ -1,0 +1,44 @@
+
+.editor-container {
+    margin-top: 2em;
+    display: flex;
+    justify-content: center;
+    column-gap: 20px;
+    /* row-gap: 10px; */
+}
+
+.editor {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    justify-content: center;
+    z-index: 1;    
+}
+
+h2{
+    display: flex;
+    justify-content: center;
+    color: #FFF;
+    font-size: 50px;
+}
+
+.console{
+    justify-content: center;    
+}
+
+.toolbar {
+    margin-top: .8em;
+    display: flex;
+    z-index: 1;
+    justify-content: flex-start;
+}
+
+.toolbar button { 
+    border: none;
+    margin-right: .5em;
+    border-radius: 9%;
+    padding: 6px;
+    color: #FFF;
+    font-size: 25px;
+    background-color: #04AA6D;
+}

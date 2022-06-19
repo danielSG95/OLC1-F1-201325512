@@ -1,0 +1,99 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+a, a:active, a:hover, a:focus {
+    text-decoration: none;
+    color: inherit;
+}
+
+li{
+    list-style: none;
+}
+
+
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 5px;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 10px;
+    border-radius: 15px;
+    background-color: #17202A;
+    /* columns: #FFF; */
+}
+
+.navbar a {
+    color: #FFF;
+    display: flex;
+    height: 100%;
+    font-size: 20px;
+    margin-left: 1em;
+    padding: 5px 9px;
+    transition: 0.8s;
+}
+
+.navbar a:hover{
+    background-color: #2C3E50;
+    border-radius: 8px;
+    opacity: 0.6;
+    font-size: 22px;
+}
+
+
+.logo{
+    margin-left: 5px;
+    margin-right:1px;
+    font-size: 28px;
+    color: #FFF;
+    background-color: #04AA6D;
+    border-radius: 8px;
+    padding: 0.5px 2px;
+    transition: 1;
+}
+
+.logo:hover {
+    cursor:pointer;
+    
+}
+
+
+.navbar a.gitContainer {
+    display: flex;
+    margin-left: auto;
+    margin-right: 10px;
+    align-items: center;
+}
+
+.github{
+    width: 30px;
+    height: auto;
+    object-fit:cover;
+    border-radius: 10px;
+}
+
+
+/* .btn-dropdown {
+    background: #17202A;
+    border: none;
+    margin-left: 1em;
+    color: white;
+    font-size: 18px;
+    transition: 0.8s;
+    padding: 5px 9px;
+    float: left;
+    overflow: hidden;
+}
+
+.btn-dropdown:hover {
+    background-color: #2C3E50;
+    border-radius: 8px;
+    opacity: 0.6;
+    font-size: 22px;
+    cursor: pointer;
+} */
