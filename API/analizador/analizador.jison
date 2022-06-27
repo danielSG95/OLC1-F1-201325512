@@ -8,8 +8,7 @@
     const {Singleton} = require('../singleton/Singleton');
     const {Bloque} = require('../instrucciones/Bloque');
     const {Asignacion} = require('../instrucciones/Asignacion');
-    const {Incremento} = require('../instrucciones/Incremento');
-    const {Decremento} = require('../instrucciones/Decremento'); 
+    const {IncDec} = require('../instrucciones/IncDec');
     const {While} = require('../instrucciones/While');
     const {Return} = require('../instrucciones/Return');
     const {Break} = require('../instrucciones/Break');
@@ -20,6 +19,11 @@
     const {Funcion} = require('../instrucciones/Funcion');
     const {Llamada} = require('../instrucciones/Llamada');
     const {Switch, Case } = require('../instrucciones/Switch');
+    const { ToLower } = require('../instrucciones/ToLower');
+    const { ToUpper } = require('../instrucciones/ToUpper');
+    const { Round } = require('../instrucciones/Round');
+    const { GraficarTs } = require("../instrucciones/GraficarTs");
+    const { Ternario } = require('../instrucciones/Ternario');
 // esto es un comentario 
     // expresiones 
     const {Aritmetica, AritmeticOp} = require('../expresiones/Aritmetica');
@@ -56,23 +60,35 @@
 "if"                        { tokens.push(new Token('r_if', yytext, yylloc.first_line, yylloc.first_column)); return 'RIF';}
 "else"                      { tokens.push(new Token('r_else', yytext, yylloc.first_line, yylloc.first_column)); return 'RELSE';}
 "null"                      { tokens.push(new Token('r_null', yytext, yylloc.first_line, yylloc.first_column)); return 'RNULL';}
-"switch"                      { tokens.push(new Token('r_switch', yytext, yylloc.first_line, yylloc.first_column)); return 'RSWITCH';}
+"switch"                    { tokens.push(new Token('r_switch', yytext, yylloc.first_line, yylloc.first_column)); return 'RSWITCH';}
 "case"                      { tokens.push(new Token('r_case', yytext, yylloc.first_line, yylloc.first_column)); return 'RCASE';}
-"default"                      { tokens.push(new Token('r_default', yytext, yylloc.first_line, yylloc.first_column)); return 'RDEFAULT';}
+"default"                   { tokens.push(new Token('r_default', yytext, yylloc.first_line, yylloc.first_column)); return 'RDEFAULT';}
 "for"                       { tokens.push(new Token('r_for', yytext, yylloc.first_line, yylloc.first_column)); return 'RFOR';}
 "while"                     { tokens.push(new Token('r_while', yytext, yylloc.first_line, yylloc.first_column)); return 'RWHILE';}
 "true"                      { tokens.push(new Token('r_true', yytext, yylloc.first_line, yylloc.first_column)); return 'RTRUE';}
-"false"                      { tokens.push(new Token('r_false', yytext, yylloc.first_line, yylloc.first_column)); return 'RFALSE';}
+"false"                     { tokens.push(new Token('r_false', yytext, yylloc.first_line, yylloc.first_column)); return 'RFALSE';}
 "do"                        { tokens.push(new Token('r_do', yytext, yylloc.first_line, yylloc.first_column)); return 'RDO';}
-"continue"                      { tokens.push(new Token('r_continue', yytext, yylloc.first_line, yylloc.first_column)); return 'RCONTINUE';}
+"continue"                  { tokens.push(new Token('r_continue', yytext, yylloc.first_line, yylloc.first_column)); return 'RCONTINUE';}
 "void"                      { tokens.push(new Token('r_void', yytext, yylloc.first_line, yylloc.first_column)); return 'RVOID';}
-"return"                      { tokens.push(new Token('r_return', yytext, yylloc.first_line, yylloc.first_column)); return 'RRETURN';}
+"return"                    { tokens.push(new Token('r_return', yytext, yylloc.first_line, yylloc.first_column)); return 'RRETURN';}
 "call"                      { tokens.push(new Token('r_call', yytext, yylloc.first_line, yylloc.first_column)); return 'RCALL';}
-"break"                      { tokens.push(new Token('r_break', yytext, yylloc.first_line, yylloc.first_column)); return 'RBREAK';}
+"break"                     { tokens.push(new Token('r_break', yytext, yylloc.first_line, yylloc.first_column)); return 'RBREAK';}
 "Println"                   { tokens.push(new Token('r_println', yytext, yylloc.first_line, yylloc.first_column)); return 'RPRINTLN';}
 "Print"                     { tokens.push(new Token('r_print', yytext, yylloc.first_line, yylloc.first_column)); return 'RPRINT';}
-"Typeof"                      { tokens.push(new Token('r_typeof', yytext, yylloc.first_line, yylloc.first_column)); return 'RTYPEOF';}
+"Typeof"                    { tokens.push(new Token('r_typeof', yytext, yylloc.first_line, yylloc.first_column)); return 'RTYPEOF';}
+"null"                      { tokens.push(new Token('r_null', yytext, yylloc.first_line, yylloc.first_column)); return 'RNULL';}
+"graficar_ts"               { tokens.push(new Token('r_graficar_ts', yytext, yylloc.first_line, yylloc.first_column)); return 'RGRAFICAR_TS';}
+"tolower"                   { tokens.push(new Token('r_tolower', yytext, yylloc.first_line, yylloc.first_column)); return 'RTOLOWER';}
+"toupper"                  { tokens.push(new Token('r_toupper', yytext, yylloc.first_line, yylloc.first_column)); return 'RTOUPPER';}
+"round"                      { tokens.push(new Token('r_round', yytext, yylloc.first_line, yylloc.first_column)); return 'RROUND';}
+"length"                    { tokens.push(new Token('r_length', yytext, yylloc.first_line, yylloc.first_column)); return 'RLENGTH';}
+"tochararray"               { tokens.push(new Token('r_tochararray', yytext, yylloc.first_line, yylloc.first_column)); return 'RTOCHARARRAY';}
+"indexof"                   { tokens.push(new Token('r_indexof', yytext, yylloc.first_line, yylloc.first_column)); return 'RINDEXOF';}
+"push"                      { tokens.push(new Token('r_push', yytext, yylloc.first_line, yylloc.first_column)); return 'RPUSH';}
+"pop"                       { tokens.push(new Token('r_pop', yytext, yylloc.first_line, yylloc.first_column)); return 'RPOP';}
+"splice"                    { tokens.push(new Token('r_splice', yytext, yylloc.first_line, yylloc.first_column)); return 'RSPLICE';}
 //simbolos
+
 ";"					        { tokens.push(new Token('tk_;', yytext, yylloc.first_line, yylloc.first_column)); return 'PTCOMA';}
 ","					        { tokens.push(new Token('tk_,', yytext, yylloc.first_line, yylloc.first_column)); return 'COMA';}
 "("					        { tokens.push(new Token('tk_(', yytext, yylloc.first_line, yylloc.first_column)); return 'PARENTESIS_A';}
@@ -80,7 +96,10 @@
 "{"					        { tokens.push(new Token('tk_{', yytext, yylloc.first_line, yylloc.first_column)); return 'LLAVE_A';}
 "}"					        { tokens.push(new Token('tk_}', yytext, yylloc.first_line, yylloc.first_column)); return 'LLAVE_C';}
 ":"					        { tokens.push(new Token('tk_:', yytext, yylloc.first_line, yylloc.first_column)); return 'DOSPTS';}
-
+"?"					        { tokens.push(new Token('tk_?', yytext, yylloc.first_line, yylloc.first_column)); return 'INTERROGACION';}
+"["					        { tokens.push(new Token('tk_[', yytext, yylloc.first_line, yylloc.first_column)); return 'CORCHETE_A';}
+"]"					        { tokens.push(new Token('tk_]', yytext, yylloc.first_line, yylloc.first_column)); return 'CORCHETE_C';}
+"."					        { tokens.push(new Token('tk_.', yytext, yylloc.first_line, yylloc.first_column)); return 'PUNTO';}
 // Relacionales
 ">="                        { tokens.push(new Token('tk_>=', yytext, yylloc.first_line, yylloc.first_column)); return 'MAYORI'; }
 "<="                        { tokens.push(new Token('tk_<=', yytext, yylloc.first_line, yylloc.first_column)); return 'MENORI'; }
@@ -103,10 +122,14 @@
 "/"                         { tokens.push(new Token('tk_/', yytext, yylloc.first_line, yylloc.first_column)); return 'DIV'; }
 "**"                        { tokens.push(new Token('tk_**', yytext, yylloc.first_line, yylloc.first_column)); return 'POW'; }
 "%"                         { tokens.push(new Token('tk_%', yytext, yylloc.first_line, yylloc.first_column)); return 'MOD'; }
-
+"--"                        { tokens.push(new Token('tk_--', yytext, yylloc.first_line, yylloc.first_column)); return 'DEC'; }
 
 // Expresiones Regulares
 ([a-zA-Z])[a-zA-Z0-9_]*	    { tokens.push(new Token('tk_identificador', yytext, yylloc.first_line, yylloc.first_column)); return 'IDENTIFICADOR'; }
+
+
+
+
 [0-9]+("."[0-9]+)?\b  	    { tokens.push(new Token('tk_decimal', yytext, yylloc.first_line, yylloc.first_column)); return 'DECIMAL'; }
 [0-9]+\b				    { tokens.push(new Token('tk_entero', yytext, yylloc.first_line, yylloc.first_column)); return 'ENTERO'; }
 
@@ -131,6 +154,7 @@
 %left 'OR'
 %left 'AND'
 %left 'XOR'
+%left 'TEST'
 %left 'MAYORI', 'MAYOR', 'IGUAL', 'DIF', 'MENORI', 'MENOR'
 %left 'MAS' 'MENOS'
 %left 'MULT' 'DIV', 'MOD'
@@ -150,7 +174,6 @@ s
     } 
     | error EOF {
         var e = new Error(err_lexema, this._$.first_line, this._$.first_column, esperados, "Error sintactico");
-        console.log(e);
     }
 ;
 
@@ -163,10 +186,8 @@ linstrucciones
     | instruccion { $$ = [$1]}
 ;
 
-instruccion
-    : declaracion { $$ = $1;} // listo
-    | asignacion { $$ = $1; } // listo
-    | if { $$ = $1; } // listo 
+instruccionB
+    : if { $$ = $1; } // listo 
     | switch{ $$ = $1; } 
     | for{ $$ = $1; } // listo
     | while { $$ = $1; } // listo
@@ -174,28 +195,73 @@ instruccion
     | return { $$ = $1; } // listo 
     | func{ $$ = $1; } // listo 
     | bloque{ $$ = $1; } // listo 
-    | call{ $$ = $1; } // listo
-    | print { $$ = $1; } // listo
-    | println { $$ = $1; } // listo 
-    | typeof PTCOMA { $$ = $1; } // listo 
-    | RBREAK PTCOMA{ $$ = new Break(@1.first_line, @1.first_column); } // listo 
+    | error LLAVE_C { 
+        console.log(`Se ha encontrado un error con: ${err_lexema} linea : ${this._$.first_line} columna: ${this._$.first_column} Esperados: ${esperados} `);
+    }
+;
+
+instruccionL
+    : RBREAK PTCOMA{ $$ = new Break(@1.first_line, @1.first_column); } // listo 
     | RCONTINUE PTCOMA{ $$ = new Continue(@1.first_line, @1.first_column); } // listo 
+    | call PTCOMA{ $$ = $1; } // listo
+    | print PTCOMA { $$ = $1; } // listo
+    | println PTCOMA { $$ = $1; } // listo 
+    | typeof PTCOMA { $$ = $1; } // listo 
     | incdec PTCOMA{ $$ = $1; } // listo 
+    | splice PTCOMA { $$ = $; }
+    | pop PTCOMA { $$ = $1; }
+    | push PTCOMA { $$ = $1; }
+    | graficarts PTCOMA { $$ = $1;}
+    | tolower { $$ = $1;}
+    | toupper PTCOMA { $$ = $1;}
+    | round PTCOMA { $$ = $1;}
+    | declaracionArray PTCOMA { $$ = $1;} // pendiente de implementar 
+    | asignacion PTCOMA { $$ = $1; } // listo
+    | declaracion PTCOMA { $$ = $1;} // listo
+    | ternario PTCOMA { $$ = $1; } // esto podria generar errores, dado que una funcion inLine es invocada por una declaracion | asignacion 
     | error PTCOMA { 
-        var e = new Error(err_lexema, this._$.first_line, this._$.first_column, esperados, "Error sintactico");
-        console.log(e);
+        console.log(`Se ha encontrado un error con: ${err_lexema} linea : ${this._$.first_line} columna: ${this._$.first_column} Esperados: ${esperados} `);
     }
-    | error LLAVE_C {
-        //this._$.first_line, this._$.first_column
-        var e = new Error(err_lexema, this._$.first_line, this._$.first_column, esperados, "Error sintactico");
-        console.log(e);
-    }
-    
+;
+
+instruccion
+   : instruccionB { $$ = $1;}
+   | instruccionL { $$ = $1;} 
 ;
 declaracion
-    : tipo ldec asig PTCOMA { $$ = new Declaracion($2, $1, $3,false, @1.first_line, @1.first_column) }
-    | RCONST tipo ldec asig PTCOMA { $$ = new Declaracion($3, $2, $4,true, @1.first_line, @1.first_column) }
+    : tipo ldec asig { $$ = new Declaracion($2, $1, $3,false, @1.first_line, @1.first_column) }
+    | RCONST tipo ldec asig { $$ = new Declaracion($3, $2, $4,true, @1.first_line, @1.first_column) }
 
+;
+
+declaracionArray
+    : tipo IDENTIFICADOR CORCHETE_A CORCHETE_C ASIG asignacionArray{
+
+    }
+    | tipo IDENTIFICADOR CORCHETE_A CORCHETE_C CORCHETE_A CORCHETE_C ASIG  asignacionMatriz
+    {
+
+    }
+;
+
+asignacionArray
+    :  RNEW tipo CORCHETE_A expresion_logica CORCHETE_C 
+    |  CORCHETE_A lAsigArray CORCHETE_C
+;
+
+lAsigArray
+    : lAsigArray COMA expresion_logica
+    | COMA expresion_logica
+;
+
+asignacionMatriz
+    : RNEW tipo CORCHETE_A expresion_logica CORCHETE_C CORCHETE_A expresion_logica CORCHETE_C 
+    | CORCHETE_A lAsigMatriz CORCHETE_C
+;
+
+lAsigMatriz
+    : lAsigMatriz COMA CORCHETE_A lAsigArray CORCHETE_C
+    | CORCHETE_A lAsigArray CORCHETE_C
 ;
 
 ldec
@@ -204,22 +270,25 @@ ldec
 ;
 
 asig
-    : %Empty
-    | ASIG expresion_logica {$$ = $2;}
+    : ASIG expresion_logica {$$ = $2;}
 ;
 
+
 asignacion
-    : IDENTIFICADOR ASIG expresion_logica PTCOMA { $$ = new Asignacion($1, $3, @1.first_line, @1.first_column);}
+    : IDENTIFICADOR ASIG expresion_logica { $$ = new Asignacion($1, $3, @1.first_line, @1.first_column);}
+    | IDENTIFICADOR CORCHETE_A expresion_numerica CORCHETE_C ASIG expresion_logica // falta implementar 
+    | IDENTIFICADOR CORCHETE_A expresion_numerica CORCHETE_C CORCHETE_A expresion_numerica CORCHETE_C ASIG expresion_logica // falta implementar 
 ;
 
 if
-    : RIF PARENTESIS_A expresion_logica PARENTESIS_C LLAVE_A bodyBlock LLAVE_C { $$ = new If($3, $6, null, null, @1.first_line, @1.first_column);}
-    | RIF PARENTESIS_A expresion_logica PARENTESIS_C LLAVE_A bodyBlock LLAVE_C RELSE if { $$ = new If($3, $6, null, $9, @1.first_line, @1.first_column);}
-    | RIF PARENTESIS_A expresion_logica PARENTESIS_C LLAVE_A bodyBlock LLAVE_C RELSE LLAVE_A bodyBlock LLAVE_C { $$ = new If($3, $6, $10, null, @1.first_line, @1.first_column);}
+    : RIF PARENTESIS_A expresion_logica PARENTESIS_C ifAux { $$ = new If($3, $5, null, null, @1.first_line, @1.first_column);}
+    | RIF PARENTESIS_A expresion_logica PARENTESIS_C ifAux RELSE if { $$ = new If($3, $5, null, $7, @1.first_line, @1.first_column);}
+    | RIF PARENTESIS_A expresion_logica PARENTESIS_C ifAux RELSE ifAux { $$ = new If($3, $5, $7, null, @1.first_line, @1.first_column);}
+;
 
-    | RIF PARENTESIS_A expresion_logica PARENTESIS_C instruccion { $$ = new If($3, [$5], null, null, @1.first_line, @1.first_column);}
-    | RIF PARENTESIS_A expresion_logica PARENTESIS_C instruccion RELSE if { $$ = new If($3, [$5], null, $7, @1.first_line, @1.first_column);}
-    | RIF PARENTESIS_A expresion_logica PARENTESIS_C instruccion RELSE instruccion { $$ = new If($3, [$5], [$6], null, @1.first_line, @1.first_column);}
+ifAux
+    : LLAVE_A linstrucciones LLAVE_C { $$ = $2;}
+    | instruccionL { $$ = [$1];}
 ;
 
 switch
@@ -243,9 +312,8 @@ cdefault
 ; 
 
 for
-    : RFOR PARENTESIS_A for_declaracion expresion_logica PTCOMA for_incremento PARENTESIS_C LLAVE_A bodyBlock LLAVE_C {
-        $$ = new For($3, $4, $6, $9, @1.first_line, @1.first_column);
-        console.log('reconociendo un for')
+    : RFOR PARENTESIS_A for_declaracion PTCOMA expresion_logica PTCOMA for_incremento PARENTESIS_C LLAVE_A bodyBlock LLAVE_C {
+        $$ = new For($3, $5, $7, $10, @1.first_line, @1.first_column);
     }
 ;
 
@@ -295,7 +363,7 @@ bloque
 ;
 
 call
-    : RCALL IDENTIFICADOR PARENTESIS_A largumentos PARENTESIS_C PTCOMA { $$ = new Llamada($2, $4, @1.first_line, @1.first_column); }
+    : RCALL IDENTIFICADOR PARENTESIS_A largumentos PARENTESIS_C  { $$ = new Llamada($2, $4, @1.first_line, @1.first_column); }
 ;
 
 largumentos
@@ -305,21 +373,80 @@ largumentos
 ;
 
 print
-    : RPRINT PARENTESIS_A expresion_logica PARENTESIS_C PTCOMA { $$ = new Print($3, @1.first_line, @1.first_column);}
+    : RPRINT PARENTESIS_A expresion_logica PARENTESIS_C  { $$ = new Print($3, @1.first_line, @1.first_column);}
 ;
 
 println
-    : RPRINTLN PARENTESIS_A expresion_logica PARENTESIS_C PTCOMA { $$ = new Println($3, @1.first_line, @1.first_column);}
+    : RPRINTLN PARENTESIS_A expresion_logica PARENTESIS_C  { $$ = new Println($3, @1.first_line, @1.first_column);}
 ;
 
 typeof
     : RTYPEOF PARENTESIS_A expresion_logica PARENTESIS_C { $$ = new Typeof($3, @1.first_line, @1.first_column); }
 ;
 
+length
+    : RLENGTH PARENTESIS_A expresion_logica PARENTESIS_C
+;
+
+tocharArray
+    : RTOCHARARRAY PARENTESIS_A expresion_logica PARENTESIS_C
+;
+
+indexOf
+    : IDENTIFICADOR PUNTO RINDEXOF PARENTESIS_A expresion_logica PARENTESIS_C
+;
+
+push
+    : IDENTIFICADOR PUNTO RPUSH PARENTESIS_A expresion_logica PARENTESIS_C
+;
+
+pop
+    : IDENTIFICADOR PUNTO RPOP PARENTESIS_A PARENTESIS_C
+;
+
+splice
+    : IDENTIFICADOR PUNTO RSPLICE PARENTESIS_A expresion_logica COMA expresion_logica PARENTESIS_C
+;
 
 bodyBlock
     : linstrucciones { $$ = $1;}
-    | %Empty
+    | %Empty { $$ = []}
+;
+// aqui se implementan las funcionalidades de la segunda fase 
+ternario
+    : expresion_logica INTERROGACION cuerpoTernario DOSPTS cuerpoTernario {
+        $$ = new Ternario($1, $3, $5, @1.first_line, @1.first_column);
+    }
+;
+
+cuerpoTernario
+    : expresion_logica { $$ = $1;}
+    | println { $$ = $1;} 
+    | print { $$ = $1;}   
+    | asignacion { $$ = $1;}
+    | call { $$ = $1;}
+;
+
+graficarts
+    : RGRAFICAR_TS PARENTESIS_A PARENTESIS_C { $$ = new GraficarTs(@1.first_line, @1.first_column);}
+;
+
+tolower
+    : RTOLOWER PARENTESIS_A expresion_logica PARENTESIS_C {
+        $$ = new ToLower($3, @1.first_line, @1.first_column);
+    }
+;
+
+toupper
+    : RTOUPPER PARENTESIS_A expresion_logica PARENTESIS_C  { 
+        $$ = new ToUpper($3, @1.first_line, @1.first_column);
+    }
+;
+
+roud
+    : RROUND PARENTESIS_A expresion_logica PARENTESIS_C {
+        $$ = new Round($3, @1.first_line, @1.first_column);
+    }
 ;
 
 expresion_logica
@@ -342,10 +469,12 @@ expresin_relacional
 ;
 
 
+
 expresion_numerica
     : MENOS expresion_numerica %prec UMENOS {
         $$ = new Aritmetica($2, new Literal(-1, Type.NUMBER, 0, 0) , AritmeticOp.UMENOS, @1.first_line, @1.first_column)
     }
+    // | DEC expresion_numerica PTCOMA %prec UMENOS  { $$ = new IncDec($2, AritmeticOp.MENOS, @1.first_line, @1.first_column);} // probar si esto funciona correctamente
     | expresion_numerica MAS expresion_numerica { $$ = new Aritmetica($1, $3, AritmeticOp.MAS,@1.first_line, @1.first_column )}
     | expresion_numerica MENOS expresion_numerica{ $$ = new Aritmetica($1, $3, AritmeticOp.MENOS,@1.first_line, @1.first_column )}
     | expresion_numerica MULT MULT expresion_numerica{ $$ = new Aritmetica($1, $3, AritmeticOp.POW,@1.first_line, @1.first_column )}
@@ -353,20 +482,36 @@ expresion_numerica
     | expresion_numerica DIV expresion_numerica{ $$ = new Aritmetica($1, $3, AritmeticOp.DIV,@1.first_line, @1.first_column )}
     | expresion_numerica MOD expresion_numerica{ $$ = new Aritmetica($1, $3, AritmeticOp.MOD,@1.first_line, @1.first_column )}
     | PARENTESIS_A expresion_logica PARENTESIS_C { $$ = $2;}
-    | incdec {$$ = $1;}
-    | expresion_logica { $$ = $1;}
     | IDENTIFICADOR PARENTESIS_A largumentos PARENTESIS_C { $$ = new Llamada($1, $3, @1.first_line, @1.first_column);}
+    | expresion_logica %prec TEST { $$ = $1; } // lo agrego de nuevo para ver si eso soluciona el problema 
     | dato {$$= $1;}
     | typeof { $$ = $1; } // probando si esto funciona  
+    | incdec {$$ = $1;}
+    | toupper { $$ = $1; }
+    | tolower  { $$ = $1; }
+    | roud { $$ = $1; }
+    | length { $$ = $1; }
+    | tocharArray { $$ = $1; }
+    | push { $$ = $1; }
+    | indexOf { $$ = $1; }
+    | pop { $$ = $1; }
+    | splice { $$ = $1; }
+    | ternario{ $$ = $1; }
 ;
 
-
+negacionDec
+    : MENOS MENOS dato{ $$ = new IncDec($3,AritmeticOp.MENOS, @1.first_line, @1.first_column);}
+   
+;
 
 incdec
-    : MAS MAS expresion_numerica { $$ = new Incremento($3, @1.first_line, @1.first_column);}
-    | MENOS MENOS expresion_numerica { $$ = new Decremento($3, @1.first_line, @1.first_column);}
-    | expresion_numerica MAS MAS{ $$ = new Incremento($1, @1.first_line, @1.first_column);}
-    | expresion_numerica MENOS MENOS{ $$ = new Decremento($1, @1.first_line, @1.first_column);}
+    : MAS MAS expresion_numerica { $$ = new IncDec($3, AritmeticOp.MAS, @1.first_line, @1.first_column);}
+    | expresion_numerica tipoDec{ $$ = new IncDec($1, $2, @1.first_line, @1.first_column);}
+;
+
+tipoDec
+    : MAS MAS { $$ = AritmeticOp.MAS }
+    | MENOS MENOS { $$ = AritmeticOp.MENOS}
 ;
 
 dato
@@ -377,6 +522,9 @@ dato
     | CHAR {$$ = new Literal($1, Type.CHAR, @1.first_line, @1.first_column);}
     | RTRUE {$$ = new Literal($1, Type.BOOLEAN, @1.first_line, @1.first_column);}
     | RFALSE { $$ = new Literal($1, Type.BOOLEAN, @1.first_line, @1.first_column);}
+    // aqui pondre la asignacion desde un array. a = b[exp]
+    | IDENTIFICADOR CORCHETE_A expresion_numerica CORCHETE_C
+    | IDENTIFICADOR CORCHETE_A expresion_numerica CORCHETE_C CORCHETE_A expresion_numerica CORCHETE_C
 ;
 
 

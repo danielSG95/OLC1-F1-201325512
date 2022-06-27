@@ -2,10 +2,21 @@ const parser = require("./analizador");
 const { Env, currentEnv } = require("../symbols/Env");
 const { Singleton } = require("../singleton/Singleton");
 const { Funcion } = require("../instrucciones/Funcion");
-function analizar(text) {
+const { Grafo } = require("../ast/Grafo");
+const response = {
+  foundFatalErrors: false,
+  res: undefined,
+};
+
+async function analizar(text) {
+  let consola = "";
+  let errores = "";
   try {
     let result = parser.parse(text);
 
+    if (result.ast == undefined || null) {
+      throw new TypeError("No input provided to the parser");
+    }
     const global = new Env(null, currentEnv.Global);
     // en la 1er pasada se debe de ejecutar solo las instrucciones de tipo funcion
 
@@ -27,14 +38,24 @@ function analizar(text) {
       console.log(Singleton.getInstance().errores);
     }
 
-    let consola = Singleton.getInstance().console;
-    console.log(consola);
-    return { consola: consola, errores: Singleton.getInstance().errores };
-    //return true;
+    consola = Singleton.getInstance().console;
+    errores = Singleton.getInstance().errores;
+    response.foundFatalErrors = false;
+    response.res = {
+      consola: consola,
+      errores: errores,
+    };
   } catch (err) {
+    console.log(err);
     console.log(Singleton.getInstance().errores);
-    return false;
+    response.foundFatalErrors = true;
+    response.res = {
+      consola: consola,
+      errores: errores,
+    };
   }
+
+  return response;
 }
 
 module.exports.analizar = analizar;

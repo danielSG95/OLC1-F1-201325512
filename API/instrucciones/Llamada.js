@@ -4,6 +4,7 @@ const { Singleton } = require("../singleton/Singleton");
 const { Env, currentEnv } = require("../symbols/Env");
 const { Type } = require("../symbols/Type");
 const { Declaracion } = require("./Declaracion");
+const { Return } = require("./Return");
 
 class Llamada extends Instruccion {
   constructor(name, lArgs, line, column) {
@@ -16,6 +17,7 @@ class Llamada extends Instruccion {
 
   ejecutar(env) {
     // Aqui se debe implementar las llamadas.
+
     let myFunc = env.buscarFuncion(this.name);
     let newEnv = new Env(env, currentEnv.Funcion);
     if (myFunc != null) {
@@ -35,9 +37,10 @@ class Llamada extends Instruccion {
             return undefined;
           }
           for (let i = 0; i < myFunc.lArgs.length; i++) {
-            if (this.lArgs[i].type != myFunc.lArgs[i].type) {
+            let tempo = this.lArgs[i].ejecutar(newEnv);
+            if (tempo.type != myFunc.lArgs[i].type) {
               this.#writeError(
-                "Los argumentos dados, no coinciden con ninguna funcion declarada"
+                "Los tipos de los argumentos dados, no coinciden con ninguna funcion declarada"
               );
               return undefined;
             }
@@ -63,14 +66,16 @@ class Llamada extends Instruccion {
           if (r != undefined) {
             if (myFunc.type != Type.VOID) {
               // aqui se que estoy esperando algun tipo de retorno.
-              if (myFunc.type == r.type) {
-                return r;
-              } else {
-                // error porque el tipo de retorno no coincide con el definido en la funcion
-                this.#writeError(
-                  "El tipo de retorno no coincide con el definido en la funcion"
-                );
-                return undefined;
+              if (iterator instanceof Return) {
+                if (myFunc.type == r.type) {
+                  return r;
+                } else {
+                  // error porque el tipo de retorno no coincide con el definido en la funcion
+                  this.#writeError(
+                    "El tipo de retorno no coincide con el definido en la funcion"
+                  );
+                  return undefined;
+                }
               }
             } else {
               if (r.type == Type.NULL) {

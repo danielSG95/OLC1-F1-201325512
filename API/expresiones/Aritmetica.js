@@ -7,7 +7,7 @@ class Aritmetica extends Expresion {
     super(line, column);
     this.left = left;
     this.right = right;
-    this.type = type;
+    this.op = type;
     this.line = line;
     this.column = column;
   }
@@ -21,7 +21,7 @@ class Aritmetica extends Expresion {
     const leftOp = this.left.ejecutar(env);
     const rightOp = this.right.ejecutar(env);
 
-    switch (this.type) {
+    switch (this.op) {
       case AritmeticOp.MAS:
         if (leftOp.type == Type.BOOLEAN || rightOp.type == Type.BOOLEAN) {
           if (leftOp.type == Type.STRING || rightOp.type == Type.STRING) {

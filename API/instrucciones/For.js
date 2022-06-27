@@ -1,6 +1,7 @@
 const { Instruccion } = require("../abstract/Instruccion");
 const { Env, currentEnv } = require("../symbols/Env");
 const { Type } = require("../symbols/Type");
+const { Return } = require("./Return");
 
 class For extends Instruccion {
   constructor(
@@ -41,7 +42,10 @@ class For extends Instruccion {
           } else if (r.type == Type.NULL) {
             return undefined;
           } else {
-            return r;
+            // aqui esto tiene que dar un error con instrucciones que puedan ser manejadas como expresiones.
+            if (iterator instanceof Return) {
+              return r;
+            }
           }
         }
       }

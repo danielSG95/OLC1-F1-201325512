@@ -7,7 +7,7 @@ class Declaracion extends Instruccion {
     super(line, column);
     this.name = name;
     this.type = type;
-    this.expression = expression;
+    this.expresion = expression;
     this.isConstant = isConstant;
     this.line = line;
     this.column = column;
@@ -18,10 +18,10 @@ class Declaracion extends Instruccion {
     // console.log(this.expression);
     let isValid = true;
 
-    let result = this.expression.ejecutar(env);
+    let result = this.expresion.ejecutar(env);
     if (result == undefined) {
       // lanazar un error
-      this.#writeError("void", this.expression.name);
+      this.#writeError("void", this.expresion.name);
       return;
     }
     if (result.type == Type.ERR) {

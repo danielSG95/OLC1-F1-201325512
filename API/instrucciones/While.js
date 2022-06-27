@@ -30,7 +30,9 @@ class While extends Instruccion {
               // aqui se que debo salir sin retornar nada.
               return undefined;
             } else {
-              return r; // aqui estoy devolviendo un tipo de dato.
+              if (iterator instanceof Return) {
+                return r;
+              }
             }
           }
         } catch (err) {

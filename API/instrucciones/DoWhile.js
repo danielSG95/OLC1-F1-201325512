@@ -27,7 +27,9 @@ class DoWhile extends Instruccion {
             } else if (r.type == Type.NULL) {
               return undefined;
             } else {
-              return r; // aqui estoy devolviendo un tipo de dato.
+              if (iterator instanceof Return) {
+                return r;
+              }
             }
           }
         } catch (err) {
