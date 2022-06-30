@@ -1,5 +1,5 @@
 const { Symbol } = require("../symbols/Symbol");
-
+const sha256 = require("crypto-js").SHA256;
 class Env {
   #tablaSimbolos;
   #tablaFunciones;
@@ -8,6 +8,13 @@ class Env {
     this.#tablaSimbolos = new Map();
     this.#tablaFunciones = new Map();
     this.typEnv = typEnv;
+    this.uid = this.generate_hash();
+  }
+
+  generate_hash() {
+    var current_date = new Date().valueOf().toString();
+    var random = Math.random().toString();
+    return sha256(current_date + random);
   }
 
   getEnv() {
@@ -50,7 +57,6 @@ class Env {
     }
   }
 
-  // esto queda temporalmente sin uso.
   buscarKey(nombre) {
     for (const iterator of this.#tablaSimbolos) {
       if (iterator[0] == nombre) {

@@ -9,6 +9,11 @@ const response = {
 };
 
 async function analizar(text) {
+  Singleton.getInstance().envReportNames = [];
+  Singleton.getInstance().errores = [];
+  Singleton.getInstance().console = "";
+
+  // luego de limpiar mi singleton, procedo a ejecutar un nuevo analisis.
   let consola = "";
   let errores = "";
   try {

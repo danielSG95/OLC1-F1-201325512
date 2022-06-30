@@ -4,6 +4,7 @@ const path = require("path");
 const { Grafo } = require("../ast/Grafo");
 let parser = require("../analizador/Interprete").analizar;
 const parser2 = require("../analizador/AstGenerator");
+const { Singleton } = require("../singleton/Singleton");
 
 let out = null;
 
@@ -43,10 +44,30 @@ router.post("/getAst", async function (req, res, next) {
     res.sendFile(path.resolve("Recursos/arbol.png"));
   } catch (error) {
     console.error(error);
-    return res.send({ status: 501, msg: "error al obtener el ast solicitado" });
+    res.send({ status: 501, msg: "error al obtener el ast solicitado" });
   }
 
-  next();
+  // next();
+});
+
+router.get("/getTsNames", function (req, res, next) {
+  let response = {
+    status: 200,
+    payload: JSON.stringify(Singleton.getInstance().envReportNames),
+  };
+
+  res.send(response);
+});
+
+router.get("/getTsFile/:name", function (req, res, next) {
+  try {
+    let name = req.params.name;
+    console.log(name);
+    res.sendFile(path.resolve(`Recursos/${name}`));
+  } catch (error) {
+    console.log(error);
+    res.send({ status: 404, msg: "The File doesnt exists" });
+  }
 });
 
 router.get("/getErrores", function (re, res, next) {

@@ -66,11 +66,32 @@ class Literal {
           value: val,
           type: t,
         };
+      case Type.ARRAY:
+        let myArray = env.buscarKey(this.value.name);
+        if (!myArray) {
+          Singleton.getInstance().errores.push(
+            new Error(
+              this.value.name,
+              this.linke,
+              this.column,
+              "La variable no existe",
+              "Error Semantico"
+            )
+          );
+          return undefined;
+        }
+
+        let expresion = this.value.exp.ejecutar(env);
+        let lit = new Literal(
+          myArray.value.value[expresion.value],
+          expresion.type,
+          this.line,
+          this.column
+        );
+        let result = lit.ejecutar(env);
+        return result;
       default:
-        return {
-          value: this.value,
-          type: Type.Error,
-        };
+        return undefined;
     }
   }
 

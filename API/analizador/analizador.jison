@@ -16,7 +16,7 @@
     const {If} = require('../instrucciones/If');
     const {DoWhile} = require('../instrucciones/DoWhile');
     const {For} = require('../instrucciones/For');
-    const {Funcion} = require('../instrucciones/Funcion');
+    const {Funcion, listParams} = require('../instrucciones/Funcion');
     const {Llamada} = require('../instrucciones/Llamada');
     const {Switch, Case } = require('../instrucciones/Switch');
     const { ToLower } = require('../instrucciones/ToLower');
@@ -24,6 +24,14 @@
     const { Round } = require('../instrucciones/Round');
     const { GraficarTs } = require("../instrucciones/GraficarTs");
     const { Ternario } = require('../instrucciones/Ternario');
+    const { Array, arrayContent, arrayLiteral } = require('../instrucciones/Array');
+    const { Push } = require('../instrucciones/Push');
+    const { Pop } = require('../instrucciones/Pop');
+    const { Length } = require('../instrucciones/Length');
+    const { ToCharArray} = require('../instrucciones/ToCharArray');
+    const { IndexOf } = require('../instrucciones/IndexOf');
+    const { AsigArray } = require('../instrucciones/AsigArray');
+    const { Splice } = require('../instrucciones/Splice');
 // esto es un comentario 
     // expresiones 
     const {Aritmetica, AritmeticOp} = require('../expresiones/Aritmetica');
@@ -79,14 +87,15 @@
 "null"                      { tokens.push(new Token('r_null', yytext, yylloc.first_line, yylloc.first_column)); return 'RNULL';}
 "graficar_ts"               { tokens.push(new Token('r_graficar_ts', yytext, yylloc.first_line, yylloc.first_column)); return 'RGRAFICAR_TS';}
 "tolower"                   { tokens.push(new Token('r_tolower', yytext, yylloc.first_line, yylloc.first_column)); return 'RTOLOWER';}
-"toupper"                  { tokens.push(new Token('r_toupper', yytext, yylloc.first_line, yylloc.first_column)); return 'RTOUPPER';}
-"round"                      { tokens.push(new Token('r_round', yytext, yylloc.first_line, yylloc.first_column)); return 'RROUND';}
+"toupper"                   { tokens.push(new Token('r_toupper', yytext, yylloc.first_line, yylloc.first_column)); return 'RTOUPPER';}
+"round"                     { tokens.push(new Token('r_round', yytext, yylloc.first_line, yylloc.first_column)); return 'RROUND';}
 "length"                    { tokens.push(new Token('r_length', yytext, yylloc.first_line, yylloc.first_column)); return 'RLENGTH';}
 "tochararray"               { tokens.push(new Token('r_tochararray', yytext, yylloc.first_line, yylloc.first_column)); return 'RTOCHARARRAY';}
 "indexof"                   { tokens.push(new Token('r_indexof', yytext, yylloc.first_line, yylloc.first_column)); return 'RINDEXOF';}
 "push"                      { tokens.push(new Token('r_push', yytext, yylloc.first_line, yylloc.first_column)); return 'RPUSH';}
 "pop"                       { tokens.push(new Token('r_pop', yytext, yylloc.first_line, yylloc.first_column)); return 'RPOP';}
 "splice"                    { tokens.push(new Token('r_splice', yytext, yylloc.first_line, yylloc.first_column)); return 'RSPLICE';}
+"new"                       { tokens.push(new Token('r_new', yytext, yylloc.first_line, yylloc.first_column)); return 'RNEW';}
 //simbolos
 
 ";"					        { tokens.push(new Token('tk_;', yytext, yylloc.first_line, yylloc.first_column)); return 'PTCOMA';}
@@ -208,7 +217,7 @@ instruccionL
     | println PTCOMA { $$ = $1; } // listo 
     | typeof PTCOMA { $$ = $1; } // listo 
     | incdec PTCOMA{ $$ = $1; } // listo 
-    | splice PTCOMA { $$ = $; }
+    | splice PTCOMA { $$ = $1; }
     | pop PTCOMA { $$ = $1; }
     | push PTCOMA { $$ = $1; }
     | graficarts PTCOMA { $$ = $1;}
@@ -236,7 +245,7 @@ declaracion
 
 declaracionArray
     : tipo IDENTIFICADOR CORCHETE_A CORCHETE_C ASIG asignacionArray{
-
+        $$ = new Array($2,$1, $6, @1.first_line, @1.first_column);
     }
     | tipo IDENTIFICADOR CORCHETE_A CORCHETE_C CORCHETE_A CORCHETE_C ASIG  asignacionMatriz
     {
@@ -245,13 +254,21 @@ declaracionArray
 ;
 
 asignacionArray
-    :  RNEW tipo CORCHETE_A expresion_logica CORCHETE_C 
-    |  CORCHETE_A lAsigArray CORCHETE_C
+    :  RNEW tipo CORCHETE_A expresion_logica CORCHETE_C  { 
+        $$ = new arrayContent($2, $4);
+    }
+    |  CORCHETE_A lAsigArray CORCHETE_C { $$ = new arrayContent(Type.NULL, $2)}
+    | tocharArray { $$ = $1; }
 ;
 
 lAsigArray
-    : lAsigArray COMA expresion_logica
-    | COMA expresion_logica
+    : lAsigArray COMA expresion_logica {        
+        $1.push($3);
+        $$ = $1;
+    }
+    | expresion_logica { 
+        $$ = [$1];
+    }
 ;
 
 asignacionMatriz
@@ -276,7 +293,9 @@ asig
 
 asignacion
     : IDENTIFICADOR ASIG expresion_logica { $$ = new Asignacion($1, $3, @1.first_line, @1.first_column);}
-    | IDENTIFICADOR CORCHETE_A expresion_numerica CORCHETE_C ASIG expresion_logica // falta implementar 
+    | IDENTIFICADOR CORCHETE_A expresion_numerica CORCHETE_C ASIG expresion_logica { 
+        $$ = new AsigArray($1, $3, $6, @1.first_line, @1.first_column);
+    } 
     | IDENTIFICADOR CORCHETE_A expresion_numerica CORCHETE_C CORCHETE_A expresion_numerica CORCHETE_C ASIG expresion_logica // falta implementar 
 ;
 
@@ -287,7 +306,7 @@ if
 ;
 
 ifAux
-    : LLAVE_A linstrucciones LLAVE_C { $$ = $2;}
+    : LLAVE_A bodyBlock LLAVE_C { $$ = $2;}
     | instruccionL { $$ = [$1];}
 ;
 
@@ -353,9 +372,15 @@ func
 ;
 
 lparametros
-    : %Empty
-    | lparametros COMA tipo IDENTIFICADOR { $1.push({value: $4, type: $3}); $$ = $1;}
-    | tipo IDENTIFICADOR { $$ = [{value: $2, type: $1}]}
+    : %Empty { $$ = []}
+    | lparametros COMA tipo IDENTIFICADOR {
+         $1.push(new listParams($4, $3));
+         $$ = $1;
+    }
+    | tipo IDENTIFICADOR { 
+        $$ = [new listParams($2, $1)]
+    
+    }
 ;
 
 bloque
@@ -385,27 +410,39 @@ typeof
 ;
 
 length
-    : RLENGTH PARENTESIS_A expresion_logica PARENTESIS_C
+    : RLENGTH PARENTESIS_A expresion_logica PARENTESIS_C { 
+        $$ = new Length($3, @1.first_line, @1.first_column);
+    }
 ;
 
 tocharArray
-    : RTOCHARARRAY PARENTESIS_A expresion_logica PARENTESIS_C
+    : RTOCHARARRAY PARENTESIS_A expresion_logica PARENTESIS_C { 
+        $$ = new ToCharArray($3, @1.first_line, @1.first_column);
+    }
 ;
 
 indexOf
-    : IDENTIFICADOR PUNTO RINDEXOF PARENTESIS_A expresion_logica PARENTESIS_C
+    : IDENTIFICADOR PUNTO RINDEXOF PARENTESIS_A expresion_logica PARENTESIS_C { 
+        $$ = new IndexOf($1, $5, @1.first_line, @1.first_column); 
+    }
 ;
 
 push
-    : IDENTIFICADOR PUNTO RPUSH PARENTESIS_A expresion_logica PARENTESIS_C
+    : IDENTIFICADOR PUNTO RPUSH PARENTESIS_A expresion_logica PARENTESIS_C { 
+        $$ = new Push($1, $5, @1.first_line, @1.first_column);
+    }
 ;
 
 pop
-    : IDENTIFICADOR PUNTO RPOP PARENTESIS_A PARENTESIS_C
+    : IDENTIFICADOR PUNTO RPOP PARENTESIS_A PARENTESIS_C { 
+        $$ = new Pop($1, @1.first_line, @1.first_column);
+    }
 ;
 
 splice
-    : IDENTIFICADOR PUNTO RSPLICE PARENTESIS_A expresion_logica COMA expresion_logica PARENTESIS_C
+    : IDENTIFICADOR PUNTO RSPLICE PARENTESIS_A expresion_logica COMA expresion_logica PARENTESIS_C { 
+        $$ = new Splice($1,$5, $7, @1.first_line, @1.first_column);
+    }
 ;
 
 bodyBlock
@@ -523,8 +560,8 @@ dato
     | RTRUE {$$ = new Literal($1, Type.BOOLEAN, @1.first_line, @1.first_column);}
     | RFALSE { $$ = new Literal($1, Type.BOOLEAN, @1.first_line, @1.first_column);}
     // aqui pondre la asignacion desde un array. a = b[exp]
-    | IDENTIFICADOR CORCHETE_A expresion_numerica CORCHETE_C
-    | IDENTIFICADOR CORCHETE_A expresion_numerica CORCHETE_C CORCHETE_A expresion_numerica CORCHETE_C
+    | IDENTIFICADOR CORCHETE_A expresion_numerica CORCHETE_C { $$ = new Literal(new arrayLiteral($1, $3), Type.ARRAY, @1.first_line, @1.first_column);}
+    | IDENTIFICADOR CORCHETE_A expresion_numerica CORCHETE_C CORCHETE_A expresion_numerica CORCHETE_C { }
 ;
 
 

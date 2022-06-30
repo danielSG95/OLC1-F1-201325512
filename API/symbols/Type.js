@@ -10,6 +10,8 @@ const Type = {
   BREAK: "break",
   VOID: "void",
   NULL: "null", // usado para el return;
+  ARRAY: "array",
+  MATRIX: "MATRIX",
 };
 
 module.exports.Type = Type;

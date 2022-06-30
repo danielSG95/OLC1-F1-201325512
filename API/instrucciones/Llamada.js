@@ -78,14 +78,16 @@ class Llamada extends Instruccion {
                 }
               }
             } else {
-              if (r.type == Type.NULL) {
-                // aqui se que debo escapar, pues encontre un return;
-                return undefined; // esto aun hay que probarlo
+              if (iterator instanceof Return) {
+                if (r.type == Type.NULL) {
+                  // aqui se que debo escapar, pues encontre un return;
+                  return undefined; // esto aun hay que probarlo
+                }
+                this.#writeError(
+                  "No se puede retornar una expresion en una funcion de tipo void"
+                );
+                return undefined;
               }
-              this.#writeError(
-                "No se puede retornar una expresion en una funcion de tipo void"
-              );
-              return undefined;
             }
           }
         }

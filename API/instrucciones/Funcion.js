@@ -17,4 +17,12 @@ class Funcion extends Instruccion {
   }
 }
 
+class listParams {
+  constructor(value, type) {
+    this.value = value;
+    this.type = type;
+  }
+}
+
 module.exports.Funcion = Funcion;
+module.exports.listParams = listParams;

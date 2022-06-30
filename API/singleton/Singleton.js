@@ -4,6 +4,7 @@ class Singleton {
   constructor() {
     this.console = "";
     this.errores = [];
+    this.envReportNames = [];
   }
 
   static getInstance() {

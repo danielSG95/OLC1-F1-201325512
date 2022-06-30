@@ -12,13 +12,37 @@ class Println extends Instruccion {
 
   ejecutar(env) {
     let result = this.expresion.ejecutar(env);
-
-    if (result.type != Type.ERR) {
-      let consol = Singleton.getInstance().console;
-      consol = consol.concat(result.value + "\n");
-      Singleton.getInstance().console = consol;
-      console.log(`Println dice :'${consol}'`);
+    let text = "";
+    if (result.type == Type.ERR) {
+      return undefined;
     }
+
+    text = result.value;
+    if (result.type == Type.ARRAY) {
+      text = this.outputArray(result.value);
+    } else if (result.type == Type.MATRIX) {
+    }
+
+    let consol = Singleton.getInstance().console;
+    consol = consol.concat(text + "\n");
+    Singleton.getInstance().console = consol;
+    console.log(`Println dice :'${consol}'`);
+  }
+
+  outputArray(val) {
+    let salida = "[";
+
+    for (let i = 0; i < val.value.length; i++) {
+      if (i == 0) {
+        salida += val.value[i];
+        continue;
+      }
+
+      salida += "," + val.value[i];
+    }
+    salida += "]";
+
+    return salida;
   }
 }
 

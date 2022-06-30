@@ -14,10 +14,7 @@ class Declaracion extends Instruccion {
   }
 
   ejecutar(env) {
-    console.log("detectando una declaracion SIUUUUU");
-    // console.log(this.expression);
     let isValid = true;
-
     let result = this.expresion.ejecutar(env);
     if (result == undefined) {
       // lanazar un error
