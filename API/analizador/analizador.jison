@@ -183,6 +183,7 @@ s
     } 
     | error EOF {
         var e = new Error(err_lexema, this._$.first_line, this._$.first_column, esperados, "Error sintactico");
+        errores.push(e);
     }
 ;
 
@@ -204,8 +205,9 @@ instruccionB
     | return { $$ = $1; } // listo 
     | func{ $$ = $1; } // listo 
     | bloque{ $$ = $1; } // listo 
-    | error LLAVE_C { 
+    | error LLAVE_C {
         console.log(`Se ha encontrado un error con: ${err_lexema} linea : ${this._$.first_line} columna: ${this._$.first_column} Esperados: ${esperados} `);
+        errores.push(new Error(err_lexema, this._$.first_line, this._$.first_column, esperados, "Error sintactico"));
     }
 ;
 
@@ -229,6 +231,8 @@ instruccionL
     | declaracion PTCOMA { $$ = $1;} // listo
     | ternario PTCOMA { $$ = $1; } // esto podria generar errores, dado que una funcion inLine es invocada por una declaracion | asignacion 
     | error PTCOMA { 
+        
+        errores.push(new Error(err_lexema, this._$.first_line, this._$.first_column, esperados, "Error sintactico"));
         console.log(`Se ha encontrado un error con: ${err_lexema} linea : ${this._$.first_line} columna: ${this._$.first_column} Esperados: ${esperados} `);
     }
 ;

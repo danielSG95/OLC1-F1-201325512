@@ -71,6 +71,8 @@
     recoverable: (boolean: TRUE when the parser has a error recovery rule available for this particular error)
   }
 */
+var err_lexema = "";
+var esperados = [];
 var analizador = (function(){
 var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[1,16],$V1=[1,17],$V2=[1,29],$V3=[1,53],$V4=[1,49],$V5=[1,34],$V6=[1,61],$V7=[1,42],$V8=[1,35],$V9=[1,36],$Va=[1,37],$Vb=[1,38],$Vc=[1,39],$Vd=[1,41],$Ve=[1,43],$Vf=[1,44],$Vg=[1,45],$Vh=[1,46],$Vi=[1,76],$Vj=[1,77],$Vk=[1,50],$Vl=[1,51],$Vm=[1,52],$Vn=[1,75],$Vo=[1,68],$Vp=[1,60],$Vq=[1,47],$Vr=[1,69],$Vs=[1,70],$Vt=[1,71],$Vu=[1,72],$Vv=[1,73],$Vw=[1,74],$Vx=[1,55],$Vy=[1,56],$Vz=[1,57],$VA=[1,58],$VB=[1,59],$VC=[1,80],$VD=[1,81],$VE=[1,83],$VF=[2,5,17,19,21,33,41,42,55,56,60,62,64,68,69,72,73,74,76,77,79,80,81,83,84,93,94,95,97,102,109,110,116,117,118,119,120,121,122,123,124,125,126],$VG=[91,99,100,101,103,104,105,106,107,108,109,110,111,112,113],$VH=[2,128],$VI=[2,129],$VJ=[2,138],$VK=[2,137],$VL=[2,135],$VM=[2,130],$VN=[2,139],$VO=[1,108],$VP=[2,94],$VQ=[2,116],$VR=[1,133],$VS=[1,134],$VT=[1,135],$VU=[1,136],$VV=[1,137],$VW=[1,138],$VX=[1,129],$VY=[1,128],$VZ=[1,130],$V_=[1,131],$V$=[1,132],$V01=[20,44,52,57,66,91,99,100,101,103,104,105,106,107,108,109,110,111,112,113],$V11=[2,145],$V21=[1,140],$V31=[1,142],$V41=[1,139],$V51=[20,44,52,57,66,99,100,101,103,104,105,106,107,108,109,110,111,112,113],$V61=[2,126],$V71=[1,147],$V81=[42,43],$V91=[1,150],$Va1=[1,152],$Vb1=[2,5,17,19,21,33,41,42,55,56,59,60,62,64,68,69,72,73,74,76,77,79,80,81,83,84,93,94,95,97,102,109,110,116,117,118,119,120,121,122,123,124,125,126],$Vc1=[91,99,100,101],$Vd1=[1,167],$Ve1=[45,52],$Vf1=[2,50],$Vg1=[1,169],$Vh1=[1,172],$Vi1=[1,171],$Vj1=[17,64,68],$Vk1=[52,57],$Vl1=[2,83],$Vm1=[1,206],$Vn1=[99,100,101,103,104,105,106,107,108,109,110,111,112,113],$Vo1=[2,76],$Vp1=[20,44,52,57,66,91,99,100,101,103,104,105,106,107,108,109,110],$Vq1=[20,44,52,57,66,91,99,100,101,103,104,105,106,107,108],$Vr1=[1,244],$Vs1=[1,255],$Vt1=[1,253],$Vu1=[1,264],$Vv1=[2,152],$Vw1=[1,274],$Vx1=[2,81],$Vy1=[1,307],$Vz1=[1,334],$VA1=[2,153],$VB1=[1,340],$VC1=[17,64],$VD1=[2,64],$VE1=[1,355],$VF1=[2,43],$VG1=[44,52];
 var parser = {trace: function trace () { },
@@ -95,6 +97,7 @@ break;
 case 2:
 
         var e = new Error(err_lexema, this._$.first_line, this._$.first_column, esperados, "Error sintactico");
+        errores.push(e);
     
 break;
 case 3:
@@ -109,9 +112,10 @@ break;
 case 6: case 7: case 8: case 9: case 10: case 11: case 12: case 13: case 42: case 63: case 126: case 128: case 130: case 131: case 132: case 133: case 134: case 135: case 136: case 137: case 138: case 139:
  this.$ = $$[$0]; 
 break;
-case 14: case 33:
- 
+case 14:
+
         console.log(`Se ha encontrado un error con: ${err_lexema} linea : ${this._$.first_line} columna: ${this._$.first_column} Esperados: ${esperados} `);
+        errores.push(new Error(err_lexema, this._$.first_line, this._$.first_column, esperados, "Error sintactico"));
     
 break;
 case 15:
@@ -128,6 +132,13 @@ case 25: case 27: case 28: case 29: case 31: case 58: case 124:
 break;
 case 26: case 34: case 35: case 66: case 67: case 68: case 93: case 96: case 97: case 98: case 99: case 100:
  this.$ = $$[$0];
+break;
+case 33:
+ 
+        
+        errores.push(new Error(err_lexema, this._$.first_line, this._$.first_column, esperados, "Error sintactico"));
+        console.log(`Se ha encontrado un error con: ${err_lexema} linea : ${this._$.first_line} columna: ${this._$.first_column} Esperados: ${esperados} `);
+    
 break;
 case 36:
  this.$ = new Declaracion($$[$0-1], $$[$0-2], $$[$0],false, _$[$0-2].first_line, _$[$0-2].first_column) 
@@ -557,6 +568,8 @@ _handle_error:
                         expected.push("'"+this.terminals_[p]+"'");
                     }
                 }
+		    esperados = [...expected];
+		    err_lexema = this.terminals_[symbol];
                 if (lexer.showPosition) {
                     errStr = 'Parse error on line '+(yylineno+1)+":\n"+lexer.showPosition()+"\nExpecting "+expected.join(', ') + ", got '" + (this.terminals_[symbol] || symbol)+ "'";
                 } else {

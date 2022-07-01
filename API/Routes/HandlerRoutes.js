@@ -7,7 +7,7 @@ const parser2 = require("../analizador/AstGenerator");
 const { Singleton } = require("../singleton/Singleton");
 
 let out = null;
-
+let inputText = "";
 const response = {
   status: 200,
   message: "",
@@ -17,7 +17,7 @@ const response = {
 router.post("/analizar", async function (req, res, next) {
   let bufferOne = req.body;
   let data = bufferOne.toString("utf8");
-
+  inputText = data;
   out = await parser(data);
 
   if (!out.foundFatalErrors) {
@@ -33,15 +33,13 @@ router.post("/analizar", async function (req, res, next) {
   res.send(JSON.stringify(response));
 });
 
-router.post("/getAst", async function (req, res, next) {
+router.get("/getAst", async function (req, res, next) {
   try {
     // aqui se deberia de llamar a la funcion que genera el diagrama de ast.
-    let bufferOne = req.body;
-    let data = bufferOne.toString("utf8");
-    let raiz = parser2.parse(data);
+    let raiz = parser2.parse(inputText);
     let miGrafo = new Grafo(raiz);
     await miGrafo.graficar();
-    res.sendFile(path.resolve("Recursos/arbol.png"));
+    res.sendFile(path.resolve("Recursos/arbol.svg"));
   } catch (error) {
     console.error(error);
     res.send({ status: 501, msg: "error al obtener el ast solicitado" });
@@ -77,7 +75,7 @@ router.get("/getErrores", function (re, res, next) {
   };
   if (out != null) {
     response = {
-      res: out.errores,
+      res: out.res.errores,
       status: 200,
     };
   }
