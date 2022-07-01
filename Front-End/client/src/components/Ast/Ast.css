@@ -1,0 +1,18 @@
+
+h2 { 
+  color: #FFFF;
+  font-size: 50px;
+}
+
+.imgAst { 
+  height: auto;
+  width: 100%;
+}
+
+.container {
+
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  
+}

@@ -1,0 +1,29 @@
+.container { 
+  /* display:flex;
+  z-index: inherit;
+  flex-direction: column; */
+}
+
+.pn-btn { 
+  display: flex;
+  border: none;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+
+p { 
+  color:#fff;
+  font-size: 1em;
+}
+
+
+.pn-btn button { 
+  border: none;
+  padding: 8px;
+  font-size: 25px;
+  margin-top: 10px;
+  margin-left: 2px;
+  background-color: #585858;
+  color: #fff
+}

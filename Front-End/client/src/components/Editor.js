@@ -24,7 +24,7 @@ export default function Editor() {
       }
       const result = await response.json();
       console.log(JSON.stringify(result));
-      setNewData(result.consola);
+      setNewData(result.payload);
     } catch (error) {
       console.log(error);
     }

@@ -14,8 +14,8 @@ export default function CodeEditor({ read, valor, onChangeText }) {
       value={content}
       minWidth='100%'
       maxWidth='100%'
-      minHeight='450px'
-      maxHeight='450px'
+      minHeight='550px'
+      maxHeight='550px'
       readOnly={read}
       theme={oneDark}
       // extensions={[javascript]}

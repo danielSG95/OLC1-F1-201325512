@@ -6,6 +6,8 @@ import reportWebVitals from "./reportWebVitals";
 import Editor from "./components/Editor";
 import Navbar from "./components/Navbar";
 import ListaErrores from "./components/ListaErrores";
+import Ast from "./components/Ast/Ast";
+import TablaSimbolos from "./components/TablaSimolos/TablaSimbolos";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>
@@ -13,6 +15,8 @@ root.render(
     <Routes>
       <Route path='/' element={<Editor />} />
       <Route path='/errores' element={<ListaErrores />} />
+      <Route path='/ast' element={<Ast />} />
+      <Route path='/reportTs' element={<TablaSimbolos />} />
     </Routes>
   </BrowserRouter>
 );

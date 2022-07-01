@@ -43,25 +43,29 @@ export default function ListaErrores() {
             <div className='col col-4'>Lexema</div>
             <div className='col col-4'>Tipo Error</div>
           </li>
-          {data.map((e, key) => (
-            <li className='table-row' key={key}>
-              <div key={key} className='col col-1' data-label='Linea'>
-                {e.linea}
-              </div>
-              <div key={e.line} className='col col-3' data-label='Columna'>
-                {e.columna}
-              </div>
-              <div className='col col-4' data-label='Descripcion'>
-                {e.descripcion}
-              </div>
-              <div className='col col-4' data-label='Lexema'>
-                {e.lexema.value}
-              </div>
-              <div className='col col-4' data-label='Tipo Error'>
-                {e.tipo}
-              </div>
-            </li>
-          ))}
+          {data ? (
+            data.map((e, key) => (
+              <li className='table-row' key={key}>
+                <div key={key} className='col col-1' data-label='Linea'>
+                  {e.linea}
+                </div>
+                <div key={e.line} className='col col-3' data-label='Columna'>
+                  {e.columna}
+                </div>
+                <div className='col col-4' data-label='Descripcion'>
+                  {e.descripcion}
+                </div>
+                <div className='col col-4' data-label='Lexema'>
+                  {e.lexema.value}
+                </div>
+                <div className='col col-4' data-label='Tipo Error'>
+                  {e.tipo}
+                </div>
+              </li>
+            ))
+          ) : (
+            <h2>No errores</h2>
+          )}
         </ul>
       </div>
     </>

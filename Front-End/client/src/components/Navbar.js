@@ -8,10 +8,8 @@ export default function Navbar() {
       <div className='logo'>OLC1</div>
       <Link to='/'>Editor</Link>
       <Link to='/errores'>Errores</Link>
-      {/* <button>Editor</button> */}
-      {/* <button>Reporte Errores</button> */}
-      <button>Reporte AST</button>
-      <button>Reporte Environment</button>
+      <Link to='/ast'>Reporte AST</Link>
+      <Link to='/reportTs'>Reporte TS</Link>
       <a
         href='https://github.com/danielSG95/OLC1-F1-201325512'
         className='gitContainer'

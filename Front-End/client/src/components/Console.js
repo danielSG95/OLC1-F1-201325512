@@ -16,8 +16,8 @@ export default function ConsolaApp({ read, valor }) {
       value={content}
       minWidth='100%'
       maxWidth='100%'
-      minHeight='450px'
-      maxHeight='450px'
+      minHeight='550px'
+      maxHeight='550px'
       readOnly={read}
       theme={oneDark}
       onChange={(v) => {
